@@ -57,6 +57,10 @@ class TestAlertTemplatesResponse:
 
 class TestAlertTemplateCreatedResponse:
     def test_created_response(self) -> None:
-        data = {"status": "ok", "message": "Alert template has been created", "id": 2}
+        data = {
+            "status": "ok",
+            "message": "Alert template has been created",
+            "id": 2,
+        }
         r = AlertTemplateCreatedResponse.model_validate(data)
         assert r.id == 2

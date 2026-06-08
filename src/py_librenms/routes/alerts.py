@@ -44,7 +44,8 @@ class Alerts:
         :param until_clear: If False, the alert will re-alert if it worsens/changes.
         """
         data = await self._client._put(
-            f"/alerts/{alert_id}", json={"note": note, "until_clear": until_clear}
+            f"/alerts/{alert_id}",
+            json={"note": note, "until_clear": until_clear},
         )
         return ApiResponse.model_validate(data)
 
@@ -74,7 +75,9 @@ class Alerts:
         :param alert_rule: Filter by alert rule ID.
         :param order: Order output, e.g. 'timestamp DESC'.
         """
-        params = _compact(state=state, severity=severity, alert_rule=alert_rule, order=order)
+        params = _compact(
+            state=state, severity=severity, alert_rule=alert_rule, order=order
+        )
         data = await self._client._get("/alerts", params=params)
         return AlertsResponse.model_validate(data)
 
@@ -127,7 +130,9 @@ class Alerts:
         data = await self._client._put(_RULES, json=kwargs)
         return ApiResponse.model_validate(data)
 
-    async def get_alert_template(self, template_id: int) -> AlertTemplatesResponse:
+    async def get_alert_template(
+        self, template_id: int
+    ) -> AlertTemplatesResponse:
         """Get the alert template details.
 
         Route: GET /api/v0/alert_templates/:id
@@ -166,7 +171,9 @@ class Alerts:
         payload: dict[str, Any] = {
             "name": name,
             "template": template,
-            **_compact(title=title, title_rec=title_rec, alert_rules=alert_rules),
+            **_compact(
+                title=title, title_rec=title_rec, alert_rules=alert_rules
+            ),
         }
         data = await self._client._post(_ALERT_TEMPLATES, json=payload)
         return AlertTemplateCreatedResponse.model_validate(data)
@@ -195,10 +202,14 @@ class Alerts:
             "template_id": template_id,
             "name": name,
             "template": template,
-            **_compact(title=title, title_rec=title_rec, alert_rules=alert_rules),
+            **_compact(
+                title=title, title_rec=title_rec, alert_rules=alert_rules
+            ),
         }
         data = await self._client._post(_ALERT_TEMPLATES, json=payload)
         return ApiResponse.model_validate(data)
 
 
-AlertsSync = synchronizer.wrap(Alerts, name="AlertsSync", target_module=__name__)
+AlertsSync = synchronizer.wrap(
+    Alerts, name="AlertsSync", target_module=__name__
+)

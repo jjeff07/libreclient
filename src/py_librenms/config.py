@@ -28,7 +28,9 @@ class LibreConfig(BaseSettings):
     )
     token: str = Field(..., description="LibreNMS API token (X-Auth-Token)")
     verify_ssl: bool = Field(True, description="Verify TLS/SSL certificates")
-    api_version: str = Field("v0", description="API version segment, e.g. 'v0'")
+    api_version: str = Field(
+        "v0", description="API version segment, e.g. 'v0'"
+    )
 
     @model_validator(mode="before")
     @classmethod

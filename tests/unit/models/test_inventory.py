@@ -9,7 +9,9 @@ class TestInventoryResponse:
             "status": "ok",
             "message": "",
             "count": 1,
-            "inventory": [{"entPhysicalIndex": 1, "entPhysicalClass": "chassis"}],
+            "inventory": [
+                {"entPhysicalIndex": 1, "entPhysicalClass": "chassis"}
+            ],
         }
         r = InventoryResponse.model_validate(data)
         assert r.data[0]["entPhysicalClass"] == "chassis"

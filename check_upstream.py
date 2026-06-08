@@ -41,7 +41,9 @@ def get_latest_tag(repo: str) -> str:
 
 def get_all_tags(repo: str, per_page: int = 10) -> list[str]:
     """Get recent tags from a GitHub repo."""
-    data = github_api(f"https://api.github.com/repos/{repo}/tags?per_page={per_page}")
+    data = github_api(
+        f"https://api.github.com/repos/{repo}/tags?per_page={per_page}"
+    )
     return [t["name"] for t in data]
 
 
@@ -49,7 +51,11 @@ def list_docs_at_tag(repo: str, tag: str, docs_path: str) -> dict[str, str]:
     """List API doc files at a given tag. Returns {filename: download_url}."""
     url = f"https://api.github.com/repos/{repo}/contents/{docs_path}?ref={tag}"
     data = github_api(url)
-    return {item["name"]: item["download_url"] for item in data if item["type"] == "file"}
+    return {
+        item["name"]: item["download_url"]
+        for item in data
+        if item["type"] == "file"
+    }
 
 
 def get_file_content(url: str) -> str:
@@ -59,7 +65,9 @@ def get_file_content(url: str) -> str:
         return resp.read().decode("utf-8")
 
 
-def compare_tags(repo: str, base_tag: str, head_tag: str, docs_path: str) -> dict:
+def compare_tags(
+    repo: str, base_tag: str, head_tag: str, docs_path: str
+) -> dict:
     """Compare API doc files between two tags.
 
     Returns dict with keys: added, removed, modified, unchanged.
@@ -76,17 +84,28 @@ def compare_tags(repo: str, base_tag: str, head_tag: str, docs_path: str) -> dic
 
     # For common files, use the GitHub compare API to detect changes
     # We'll use a simpler approach: compare via commits
-    compare_url = f"https://api.github.com/repos/{repo}/compare/{base_tag}...{head_tag}"
+    compare_url = (
+        f"https://api.github.com/repos/{repo}/compare/{base_tag}...{head_tag}"
+    )
     try:
         compare_data = github_api(compare_url)
         changed_files = {f["filename"] for f in compare_data.get("files", [])}
-        modified = sorted(name for name in common if f"{docs_path}/{name}" in changed_files)
-        unchanged = sorted(name for name in common if f"{docs_path}/{name}" not in changed_files)
+        modified = sorted(
+            name for name in common if f"{docs_path}/{name}" in changed_files
+        )
+        unchanged = sorted(
+            name
+            for name in common
+            if f"{docs_path}/{name}" not in changed_files
+        )
     except HTTPError:
         # Fallback: mark all common as "unknown"
         modified = []
         unchanged = common
-        print("  (Could not fetch compare data; showing file lists only)", file=sys.stderr)
+        print(
+            "  (Could not fetch compare data; showing file lists only)",
+            file=sys.stderr,
+        )
 
     return {
         "added": added,
@@ -113,14 +132,25 @@ def bump_tag(new_tag: str) -> None:
 
 
 def main() -> None:  # noqa: S3776
-    parser = argparse.ArgumentParser(description="Check upstream LibreNMS API doc changes.")
-    parser.add_argument("--diff", action="store_true", help="Show file-level changes")
-    parser.add_argument(
-        "--full", action="store_true", help="Show full content diff of modified files"
+    parser = argparse.ArgumentParser(
+        description="Check upstream LibreNMS API doc changes."
     )
-    parser.add_argument("--bump", action="store_true", help="Bump pinned_tag to latest")
     parser.add_argument(
-        "--tag", type=str, default=None, help="Compare against this tag (default: latest)"
+        "--diff", action="store_true", help="Show file-level changes"
+    )
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="Show full content diff of modified files",
+    )
+    parser.add_argument(
+        "--bump", action="store_true", help="Bump pinned_tag to latest"
+    )
+    parser.add_argument(
+        "--tag",
+        type=str,
+        default=None,
+        help="Compare against this tag (default: latest)",
     )
     args = parser.parse_args()
 
@@ -187,7 +217,9 @@ def main() -> None:  # noqa: S3776
                 head_content = get_file_content(head_url)
 
                 if base_content == head_content:
-                    print("  (content identical — change may be in metadata only)")
+                    print(
+                        "  (content identical — change may be in metadata only)"
+                    )
                     continue
 
                 # Simple line diff
@@ -201,7 +233,9 @@ def main() -> None:  # noqa: S3776
                 )
                 sys.stdout.writelines(diff)
     else:
-        print("\n  Run with --diff to see changed files, or --full for content diffs.")
+        print(
+            "\n  Run with --diff to see changed files, or --full for content diffs."
+        )
         print("  Run with --bump to update pinned_tag to latest.")
 
 

@@ -10,4 +10,6 @@ from ._base import ListResponse
 class LocationsResponse(ListResponse):
     """Response from list_locations."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="locations")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="locations"
+    )

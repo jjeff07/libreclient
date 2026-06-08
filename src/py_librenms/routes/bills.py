@@ -18,7 +18,9 @@ class Bills:
     def __init__(self, client: ClientProtocol) -> None:
         self._client = client
 
-    async def list_bills(self, period: Literal["previous"] | None = None) -> BillsResponse:
+    async def list_bills(
+        self, period: Literal["previous"] | None = None
+    ) -> BillsResponse:
         """Retrieve the list of bills currently in the system.
 
         Route: GET /api/v0/bills
@@ -74,7 +76,9 @@ class Bills:
         :param bill_id: Bill ID.
         """
         params = _graph_params(from_time, to_time)
-        return await self._client._get_bytes(f"/bills/{bill_id}/graphs/{graph_type}", params=params)
+        return await self._client._get_bytes(
+            f"/bills/{bill_id}/graphs/{graph_type}", params=params
+        )
 
     async def get_bill_graphdata(
         self,
@@ -95,7 +99,9 @@ class Bills:
         :param to_time: End time.
         """
         params = _graph_params(from_time, to_time, reducefactor=reducefactor)
-        data = await self._client._get(f"/bills/{bill_id}/graphdata/{graph_type}", params=params)
+        data = await self._client._get(
+            f"/bills/{bill_id}/graphdata/{graph_type}", params=params
+        )
         return BillsResponse.model_validate(data)
 
     async def get_bill_history(self, bill_id: int) -> BillHistoryResponse:

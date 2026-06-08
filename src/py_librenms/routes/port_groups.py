@@ -22,7 +22,9 @@ class PortGroups:
         data = await self._client._get("/port_groups")
         return PortGroupsResponse.model_validate(data)
 
-    async def get_ports_by_group(self, name: str, full: bool = False) -> PortGroupsResponse:
+    async def get_ports_by_group(
+        self, name: str, full: bool = False
+    ) -> PortGroupsResponse:
         """List all ports matching the given group.
 
         Route: GET /api/v0/port_groups/:name
@@ -36,7 +38,9 @@ class PortGroups:
         data = await self._client._get(f"/port_groups/{name}", params=params)
         return PortGroupsResponse.model_validate(data)
 
-    async def add_port_group(self, name: str, desc: str | None = None) -> ApiResponse:
+    async def add_port_group(
+        self, name: str, desc: str | None = None
+    ) -> ApiResponse:
         """Add a new port group.
 
         Route: POST /api/v0/port_groups
@@ -48,7 +52,9 @@ class PortGroups:
         data = await self._client._post("/port_groups", json=payload)
         return ApiResponse.model_validate(data)
 
-    async def assign_port_group(self, port_group_id: int, port_ids: list[str]) -> ApiResponse:
+    async def assign_port_group(
+        self, port_group_id: int, port_ids: list[str]
+    ) -> ApiResponse:
         """Assign a port group to a list of ports.
 
         Route: POST /api/v0/port_groups/:port_group_id/assign
@@ -61,7 +67,9 @@ class PortGroups:
         )
         return ApiResponse.model_validate(data)
 
-    async def remove_port_group(self, port_group_id: int, port_ids: list[str]) -> ApiResponse:
+    async def remove_port_group(
+        self, port_group_id: int, port_ids: list[str]
+    ) -> ApiResponse:
         """Remove a port group from a list of ports.
 
         Route: POST /api/v0/port_groups/:port_group_id/remove
@@ -74,4 +82,6 @@ class PortGroups:
         return ApiResponse.model_validate(data)
 
 
-PortGroupsSync = synchronizer.wrap(PortGroups, name="PortGroupsSync", target_module=__name__)
+PortGroupsSync = synchronizer.wrap(
+    PortGroups, name="PortGroupsSync", target_module=__name__
+)

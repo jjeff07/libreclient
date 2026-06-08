@@ -24,12 +24,20 @@ class BaseLibreClient(LibreConfig, ABC):
     async def _request_raw(self, method: str, url: str, **kwargs: Any) -> Any:
         """Execute one HTTP request and return the raw response object."""
 
-    async def _request(self, method: str, path: str, **kwargs: Any) -> dict | list:
-        response = await self._request_raw(method, self._api_url(path), **kwargs)
+    async def _request(
+        self, method: str, path: str, **kwargs: Any
+    ) -> dict | list:
+        response = await self._request_raw(
+            method, self._api_url(path), **kwargs
+        )
         return await _json_from_response(response)
 
-    async def _request_bytes(self, method: str, path: str, **kwargs: Any) -> bytes:
-        response = await self._request_raw(method, self._api_url(path), **kwargs)
+    async def _request_bytes(
+        self, method: str, path: str, **kwargs: Any
+    ) -> bytes:
+        response = await self._request_raw(
+            method, self._api_url(path), **kwargs
+        )
         payload = response.content
         if inspect.isawaitable(payload):
             payload = await payload

@@ -21,7 +21,9 @@ class PortSecurity:
         data = await self._client._get("/port_security")
         return PortSecurityResponse.model_validate(data)
 
-    async def get_port_security_by_port(self, port_id: int) -> PortSecurityResponse:
+    async def get_port_security_by_port(
+        self, port_id: int
+    ) -> PortSecurityResponse:
         """Get port security info for a specific port.
 
         Route: GET /api/v0/port_security/port/:port_id
@@ -31,7 +33,9 @@ class PortSecurity:
         data = await self._client._get(f"/port_security/port/{port_id}")
         return PortSecurityResponse.model_validate(data)
 
-    async def get_port_security_by_hostname(self, hostname: str) -> PortSecurityResponse:
+    async def get_port_security_by_hostname(
+        self, hostname: str
+    ) -> PortSecurityResponse:
         """Get port security info for all ports on a device.
 
         Route: GET /api/v0/port_security/device/:hostname
@@ -42,4 +46,6 @@ class PortSecurity:
         return PortSecurityResponse.model_validate(data)
 
 
-PortSecuritySync = synchronizer.wrap(PortSecurity, name="PortSecuritySync", target_module=__name__)
+PortSecuritySync = synchronizer.wrap(
+    PortSecurity, name="PortSecuritySync", target_module=__name__
+)

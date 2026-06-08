@@ -31,4 +31,6 @@ class System:
         return SystemResponse.model_validate(data)
 
 
-SystemSync = synchronizer.wrap(System, name="SystemSync", target_module=__name__)
+SystemSync = synchronizer.wrap(
+    System, name="SystemSync", target_module=__name__
+)

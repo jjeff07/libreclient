@@ -9,7 +9,12 @@ from py_librenms.routes.locations import Locations
 
 class TestListLocations:
     def test_calls_correct_path(self, mock_client) -> None:
-        mock_client._get.return_value = {"status": "ok", "message": "", "count": 0, "locations": []}
+        mock_client._get.return_value = {
+            "status": "ok",
+            "message": "",
+            "count": 0,
+            "locations": [],
+        }
         route = Locations(mock_client)
         result = asyncio.run(route.list_locations())
         mock_client._get.assert_called_once_with("/resources/locations")
@@ -29,7 +34,10 @@ class TestAddLocation:
 
 class TestDeleteLocation:
     def test_calls_delete(self, mock_client) -> None:
-        mock_client._delete.return_value = {"status": "ok", "message": "deleted"}
+        mock_client._delete.return_value = {
+            "status": "ok",
+            "message": "deleted",
+        }
         route = Locations(mock_client)
         result = asyncio.run(route.delete_location("DC1"))
         mock_client._delete.assert_called_once_with("/locations/DC1")
@@ -38,7 +46,12 @@ class TestDeleteLocation:
 
 class TestGetLocation:
     def test_calls_correct_path(self, mock_client) -> None:
-        mock_client._get.return_value = {"status": "ok", "message": "", "count": 0, "locations": []}
+        mock_client._get.return_value = {
+            "status": "ok",
+            "message": "",
+            "count": 0,
+            "locations": [],
+        }
         route = Locations(mock_client)
         result = asyncio.run(route.get_location("DC1"))
         mock_client._get.assert_called_once_with("/location/DC1")

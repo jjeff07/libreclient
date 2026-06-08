@@ -28,10 +28,14 @@ class DevicePortsResponse(ListResponse):
 class DeviceFdbResponse(ListResponse):
     """Response from get_device_fdb."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="ports_fdb")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="ports_fdb"
+    )
 
 
 class ComponentsResponse(ListResponse):
     """Response from get_components."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="components")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="components"
+    )

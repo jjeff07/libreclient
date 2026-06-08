@@ -26,11 +26,16 @@ class Services:
         :param state: Optional filter by state (valid options are 0=Ok, 1=Warning, 2=Critical).
         :param type: Optional filter by service type.
         """
-        data = await self._client._get("/services", params=_compact(state=state, type=type))
+        data = await self._client._get(
+            "/services", params=_compact(state=state, type=type)
+        )
         return ServicesResponse.model_validate(data)
 
     async def get_service_for_host(
-        self, hostname: str, state: Literal[0, 1, 2] | None = None, type: str | None = None
+        self,
+        hostname: str,
+        state: Literal[0, 1, 2] | None = None,
+        type: str | None = None,
     ) -> ServicesResponse:
         """Retrieve services for a specific device.
 
@@ -73,7 +78,9 @@ class Services:
         data = await self._client._post(f"/services/{hostname}", json=payload)
         return ApiResponse.model_validate(data)
 
-    async def edit_service_from_host(self, service_id: int, **kwargs) -> ApiResponse:
+    async def edit_service_from_host(
+        self, service_id: int, **kwargs
+    ) -> ApiResponse:
         """Edit a service.
 
         Route: PATCH /api/v0/services/:service_id
@@ -81,7 +88,9 @@ class Services:
         :param service_id: Service ID to edit.
         :param kwargs: Service fields to update.
         """
-        data = await self._client._patch(f"/services/{service_id}", json=kwargs)
+        data = await self._client._patch(
+            f"/services/{service_id}", json=kwargs
+        )
         return ApiResponse.model_validate(data)
 
     async def delete_service_from_host(self, service_id: int) -> ApiResponse:
@@ -94,4 +103,6 @@ class Services:
         return ApiResponse.model_validate(data)
 
 
-ServicesSync = synchronizer.wrap(Services, name="ServicesSync", target_module=__name__)
+ServicesSync = synchronizer.wrap(
+    Services, name="ServicesSync", target_module=__name__
+)

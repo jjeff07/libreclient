@@ -5,7 +5,10 @@ from __future__ import annotations
 from typing import Literal
 
 from ..models import ApiResponse
-from ..models.device_groups import DeviceGroupDevicesResponse, DeviceGroupsResponse
+from ..models.device_groups import (
+    DeviceGroupDevicesResponse,
+    DeviceGroupsResponse,
+)
 from ._synchronicity import synchronizer
 from ._types import ClientProtocol, _compact, _validate_maintenance_params
 
@@ -23,7 +26,9 @@ def _validate_group_type(
     if type == "static" and not devices:
         raise ValueError("'devices' is required when type is 'static'")
     if type == "dynamic" and devices:
-        print("WARNING: 'devices' is ignored when type is 'dynamic', discarding")
+        print(
+            "WARNING: 'devices' is ignored when type is 'dynamic', discarding"
+        )
         devices = None
     if type == "static" and rules:
         print("WARNING: 'rules' is ignored when type is 'static', discarding")
@@ -96,7 +101,9 @@ class DeviceGroups:
         """
         if type is not None:
             rules, devices = _validate_group_type(type, rules, devices)
-        payload = _compact(name=new_name, type=type, desc=desc, rules=rules, devices=devices)
+        payload = _compact(
+            name=new_name, type=type, desc=desc, rules=rules, devices=devices
+        )
         data = await self._client._patch(f"/devicegroups/{name}", json=payload)
         return ApiResponse.model_validate(data)
 
@@ -152,12 +159,18 @@ class DeviceGroups:
         _validate_maintenance_params(duration, start)
         payload: dict = {
             "duration": duration,
-            **_compact(title=title, notes=notes, start=start, behavior=behavior),
+            **_compact(
+                title=title, notes=notes, start=start, behavior=behavior
+            ),
         }
-        data = await self._client._post(f"/devicegroups/{name}/maintenance", json=payload)
+        data = await self._client._post(
+            f"/devicegroups/{name}/maintenance", json=payload
+        )
         return ApiResponse.model_validate(data)
 
-    async def add_devices_to_group(self, name: str, devices: list) -> ApiResponse:
+    async def add_devices_to_group(
+        self, name: str, devices: list
+    ) -> ApiResponse:
         """Add devices to a device group.
 
         Route: POST /api/v0/devicegroups/:name/devices
@@ -165,10 +178,14 @@ class DeviceGroups:
         :param name: URL-encoded device group name.
         :param devices: List of device ids to add.
         """
-        data = await self._client._post(f"/devicegroups/{name}/devices", json={"devices": devices})
+        data = await self._client._post(
+            f"/devicegroups/{name}/devices", json={"devices": devices}
+        )
         return ApiResponse.model_validate(data)
 
-    async def remove_devices_from_group(self, name: str, devices: list[int]) -> ApiResponse:
+    async def remove_devices_from_group(
+        self, name: str, devices: list[int]
+    ) -> ApiResponse:
         """Remove devices from a device group.
 
         Route: DELETE /api/v0/devicegroups/:name/devices
@@ -182,4 +199,6 @@ class DeviceGroups:
         return ApiResponse.model_validate(data)
 
 
-DeviceGroupsSync = synchronizer.wrap(DeviceGroups, name="DeviceGroupsSync", target_module=__name__)
+DeviceGroupsSync = synchronizer.wrap(
+    DeviceGroups, name="DeviceGroupsSync", target_module=__name__
+)

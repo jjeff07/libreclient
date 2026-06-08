@@ -73,7 +73,9 @@ class Routing:
         :param bgp_id: BGP session ID.
         :param bgp_descr: New description.
         """
-        data = await self._client._post(f"/bgp/{bgp_id}", json={"bgp_descr": bgp_descr})
+        data = await self._client._post(
+            f"/bgp/{bgp_id}", json={"bgp_descr": bgp_descr}
+        )
         return ApiResponse.model_validate(data)
 
     async def list_cbgp(self, hostname: str | None = None) -> RoutingResponse:
@@ -82,7 +84,9 @@ class Routing:
         Route: GET /api/v0/routing/bgp/cbgp
         :param hostname: Optional filter by hostname.
         """
-        data = await self._client._get("/routing/bgp/cbgp", params=_compact(hostname=hostname))
+        data = await self._client._get(
+            "/routing/bgp/cbgp", params=_compact(hostname=hostname)
+        )
         return RoutingResponse.model_validate(data)
 
     async def list_ip_addresses(
@@ -100,14 +104,18 @@ class Routing:
         data = await self._client._get(url)
         return RoutingResponse.model_validate(data)
 
-    async def get_network_ip_addresses(self, network_id: int) -> RoutingResponse:
+    async def get_network_ip_addresses(
+        self, network_id: int
+    ) -> RoutingResponse:
         """Get all IPv4 and IPv6 addresses for a particular network.
 
         Route: GET /api/v0/resources/ip/networks/:id/ip
 
         :param network_id: Network ID.
         """
-        data = await self._client._get(f"/resources/ip/networks/{network_id}/ip")
+        data = await self._client._get(
+            f"/resources/ip/networks/{network_id}/ip"
+        )
         return RoutingResponse.model_validate(data)
 
     async def list_ip_networks(
@@ -140,7 +148,9 @@ class Routing:
         Route: GET /api/v0/ospf
         :param hostname: Optional filter by hostname.
         """
-        data = await self._client._get("/ospf", params=_compact(hostname=hostname))
+        data = await self._client._get(
+            "/ospf", params=_compact(hostname=hostname)
+        )
         return RoutingResponse.model_validate(data)
 
     async def list_ospf_ports(self) -> RoutingResponse:
@@ -151,22 +161,30 @@ class Routing:
         data = await self._client._get("/ospf_ports")
         return RoutingResponse.model_validate(data)
 
-    async def list_ospfv3(self, hostname: str | None = None) -> RoutingResponse:
+    async def list_ospfv3(
+        self, hostname: str | None = None
+    ) -> RoutingResponse:
         """List current OSPFv3 neighbours.
 
         Route: GET /api/v0/ospfv3
         :param hostname: Optional filter by hostname.
         """
-        data = await self._client._get("/ospfv3", params=_compact(hostname=hostname))
+        data = await self._client._get(
+            "/ospfv3", params=_compact(hostname=hostname)
+        )
         return RoutingResponse.model_validate(data)
 
-    async def list_ospfv3_ports(self, hostname: str | None = None) -> RoutingResponse:
+    async def list_ospfv3_ports(
+        self, hostname: str | None = None
+    ) -> RoutingResponse:
         """List current OSPFv3 ports.
 
         Route: GET /api/v0/ospfv3_ports
         :param hostname: Optional filter by hostname.
         """
-        data = await self._client._get("/ospfv3_ports", params=_compact(hostname=hostname))
+        data = await self._client._get(
+            "/ospfv3_ports", params=_compact(hostname=hostname)
+        )
         return RoutingResponse.model_validate(data)
 
     async def list_vrf(
@@ -197,23 +215,33 @@ class Routing:
         data = await self._client._get(f"/routing/vrf/{vrf_id}")
         return RoutingResponse.model_validate(data)
 
-    async def list_mpls_services(self, hostname: str | None = None) -> RoutingResponse:
+    async def list_mpls_services(
+        self, hostname: str | None = None
+    ) -> RoutingResponse:
         """List MPLS services.
 
         Route: GET /api/v0/routing/mpls/services
         :param hostname: Optional filter by hostname.
         """
-        data = await self._client._get("/routing/mpls/services", params=_compact(hostname=hostname))
+        data = await self._client._get(
+            "/routing/mpls/services", params=_compact(hostname=hostname)
+        )
         return RoutingResponse.model_validate(data)
 
-    async def list_mpls_saps(self, hostname: str | None = None) -> RoutingResponse:
+    async def list_mpls_saps(
+        self, hostname: str | None = None
+    ) -> RoutingResponse:
         """List MPLS SAPs.
 
         Route: GET /api/v0/routing/mpls/saps
         :param hostname: Optional filter by hostname.
         """
-        data = await self._client._get("/routing/mpls/saps", params=_compact(hostname=hostname))
+        data = await self._client._get(
+            "/routing/mpls/saps", params=_compact(hostname=hostname)
+        )
         return RoutingResponse.model_validate(data)
 
 
-RoutingSync = synchronizer.wrap(Routing, name="RoutingSync", target_module=__name__)
+RoutingSync = synchronizer.wrap(
+    Routing, name="RoutingSync", target_module=__name__
+)

@@ -93,4 +93,6 @@ class Switching:
         return SwitchingResponse.model_validate(data)
 
 
-SwitchingSync = synchronizer.wrap(Switching, name="SwitchingSync", target_module=__name__)
+SwitchingSync = synchronizer.wrap(
+    Switching, name="SwitchingSync", target_module=__name__
+)

@@ -50,5 +50,7 @@ class TestListResponse:
         assert r.count == 0
 
     def test_count_from_data(self) -> None:
-        r = ListResponse.model_validate({"status": "ok", "message": "", "count": 42})
+        r = ListResponse.model_validate(
+            {"status": "ok", "message": "", "count": 42}
+        )
         assert r.count == 42

@@ -8,7 +8,12 @@ from py_librenms.routes.pollers import Pollers
 
 class TestListPollers:
     def test_calls_correct_path(self, mock_client) -> None:
-        mock_client._get.return_value = {"status": "ok", "message": "", "count": 0, "pollers": []}
+        mock_client._get.return_value = {
+            "status": "ok",
+            "message": "",
+            "count": 0,
+            "pollers": [],
+        }
         route = Pollers(mock_client)
         result = asyncio.run(route.list_pollers())
         mock_client._get.assert_called_once_with("/pollers")
@@ -17,13 +22,25 @@ class TestListPollers:
 
 class TestListPollerLog:
     def test_no_params(self, mock_client) -> None:
-        mock_client._get.return_value = {"status": "ok", "message": "", "count": 0, "pollers": []}
+        mock_client._get.return_value = {
+            "status": "ok",
+            "message": "",
+            "count": 0,
+            "pollers": [],
+        }
         route = Pollers(mock_client)
         asyncio.run(route.list_poller_log())
         mock_client._get.assert_called_once_with("/pollers/log", params={})
 
     def test_unpolled_filter(self, mock_client) -> None:
-        mock_client._get.return_value = {"status": "ok", "message": "", "count": 0, "pollers": []}
+        mock_client._get.return_value = {
+            "status": "ok",
+            "message": "",
+            "count": 0,
+            "pollers": [],
+        }
         route = Pollers(mock_client)
         asyncio.run(route.list_poller_log(unpolled=True))
-        mock_client._get.assert_called_once_with("/pollers/log", params={"unpolled": 1})
+        mock_client._get.assert_called_once_with(
+            "/pollers/log", params={"unpolled": 1}
+        )

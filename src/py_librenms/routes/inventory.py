@@ -47,8 +47,12 @@ class Inventory:
         params = {}
         if ent_physical_contained_in is not None:
             params["entPhysicalContainedIn"] = ent_physical_contained_in
-        data = await self._client._get(f"/inventory/{hostname}/all", params=params)
+        data = await self._client._get(
+            f"/inventory/{hostname}/all", params=params
+        )
         return InventoryResponse.model_validate(data)
 
 
-InventorySync = synchronizer.wrap(Inventory, name="InventorySync", target_module=__name__)
+InventorySync = synchronizer.wrap(
+    Inventory, name="InventorySync", target_module=__name__
+)

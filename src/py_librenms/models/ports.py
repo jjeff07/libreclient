@@ -22,13 +22,17 @@ class PortResponse(ListResponse):
 class PortIpResponse(ListResponse):
     """Response from get_port_ip_info."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="addresses")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="addresses"
+    )
 
 
 class PortTransceiverResponse(ApiResponse):
     """Response from get_port_transceiver."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="transceivers")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="transceivers"
+    )
 
 
 class PortDescriptionResponse(ApiResponse):

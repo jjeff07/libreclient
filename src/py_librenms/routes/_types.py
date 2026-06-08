@@ -25,13 +25,17 @@ def _compact(**kwargs: Any) -> dict[str, Any]:
     return {k: v for k, v in kwargs.items() if v is not None}
 
 
-def _validate_maintenance_params(duration: str, start: str | None = None) -> None:
+def _validate_maintenance_params(
+    duration: str, start: str | None = None
+) -> None:
     """Validate duration and start format for maintenance endpoints.
 
     :raises ValueError: If duration or start format is invalid.
     """
     if not _DURATION_RE.match(duration):
-        raise ValueError(f"'duration' must be in 'HH:MM' format (e.g. '02:00'), got '{duration}'")
+        raise ValueError(
+            f"'duration' must be in 'HH:MM' format (e.g. '02:00'), got '{duration}'"
+        )
     if start is not None and not _START_RE.match(start):
         raise ValueError(
             f"'start' must be in 'Y-m-d H:i:00' format (e.g. '2022-08-01 22:45:00'), got '{start}'"

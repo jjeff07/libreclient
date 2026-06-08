@@ -22,7 +22,9 @@ class RulesResponse(ListResponse):
 class AlertTemplatesResponse(ListResponse):
     """Response from get_alert_template / list_alert_templates."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="alert_templates")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="alert_templates"
+    )
 
 
 class AlertTemplateCreatedResponse(ApiResponseWithId):

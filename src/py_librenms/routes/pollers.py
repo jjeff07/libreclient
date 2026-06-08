@@ -35,4 +35,6 @@ class Pollers:
         return PollersResponse.model_validate(data)
 
 
-PollersSync = synchronizer.wrap(Pollers, name="PollersSync", target_module=__name__)
+PollersSync = synchronizer.wrap(
+    Pollers, name="PollersSync", target_module=__name__
+)

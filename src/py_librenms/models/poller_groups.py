@@ -10,4 +10,6 @@ from ._base import ListResponse
 class PollerGroupsResponse(ListResponse):
     """Response from get_poller_groups."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="get_poller_group")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="get_poller_group"
+    )

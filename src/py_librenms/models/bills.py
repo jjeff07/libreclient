@@ -16,4 +16,6 @@ class BillsResponse(ListResponse):
 class BillHistoryResponse(ListResponse):
     """Response from get_bill_history."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="bill_history")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="bill_history"
+    )

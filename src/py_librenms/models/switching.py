@@ -10,4 +10,6 @@ from ._base import ListResponse
 class SwitchingResponse(ListResponse):
     """Response from switching list endpoints."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="switching")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="switching"
+    )

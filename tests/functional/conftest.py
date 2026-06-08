@@ -29,7 +29,9 @@ def client():
     url = os.environ.get("LIBRENMS_URL")
     token = os.environ.get("LIBRENMS_TOKEN")
     if not url or not token:
-        pytest.skip("LIBRENMS_URL and LIBRENMS_TOKEN must be set for functional tests")
+        pytest.skip(
+            "LIBRENMS_URL and LIBRENMS_TOKEN must be set for functional tests"
+        )
     c = LibreClientSync(url=url, token=token)
     yield c
     c.close()

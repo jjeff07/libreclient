@@ -66,7 +66,9 @@ class Locations:
         :param lng: Optional new longitude.
         """
         payload = _compact(lat=lat, lng=lng)
-        data = await self._client._patch(f"/locations/{location}", json=payload)
+        data = await self._client._patch(
+            f"/locations/{location}", json=payload
+        )
         return ApiResponse.model_validate(data)
 
     async def get_location(self, location: str) -> LocationsResponse:
@@ -102,10 +104,16 @@ class Locations:
         _validate_maintenance_params(duration, start)
         payload: dict = {
             "duration": duration,
-            **_compact(title=title, notes=notes, start=start, behavior=behavior),
+            **_compact(
+                title=title, notes=notes, start=start, behavior=behavior
+            ),
         }
-        data = await self._client._post(f"/locations/{location}/maintenance", json=payload)
+        data = await self._client._post(
+            f"/locations/{location}/maintenance", json=payload
+        )
         return ApiResponse.model_validate(data)
 
 
-LocationsSync = synchronizer.wrap(Locations, name="LocationsSync", target_module=__name__)
+LocationsSync = synchronizer.wrap(
+    Locations, name="LocationsSync", target_module=__name__
+)

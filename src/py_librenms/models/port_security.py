@@ -10,4 +10,6 @@ from ._base import ListResponse
 class PortSecurityResponse(ListResponse):
     """Response from get_port_security."""
 
-    data: list[dict] = Field(default_factory=list, validation_alias="port_security")
+    data: list[dict] = Field(
+        default_factory=list, validation_alias="port_security"
+    )

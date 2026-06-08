@@ -141,7 +141,9 @@ class Logs:
         payload: dict = {"text": text, "severity": severity}
         if type is not None:
             payload["type"] = type
-        data = await self._client._post(f"/devices/{hostname}/eventlog", json=payload)
+        data = await self._client._post(
+            f"/devices/{hostname}/eventlog", json=payload
+        )
         return ApiResponse.model_validate(data)
 
 

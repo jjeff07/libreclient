@@ -22,7 +22,9 @@ def test_config_extracts_api_version_from_url() -> None:
 
 
 def test_config_extracts_api_version_with_trailing_slash() -> None:
-    cfg = LibreConfig(url="https://nms.example.com/some/base/api/v12/", token="secret")
+    cfg = LibreConfig(
+        url="https://nms.example.com/some/base/api/v12/", token="secret"
+    )
 
     assert str(cfg.url) == "https://nms.example.com/some/base"
     assert cfg.api_version == "v12"

@@ -49,10 +49,14 @@ class Ports:
         params = {}
         if columns is not None:
             params["columns"] = columns
-        data = await self._client._get(f"/ports/search/{field}/{search}", params=params)
+        data = await self._client._get(
+            f"/ports/search/{field}/{search}", params=params
+        )
         return PortsResponse.model_validate(data)
 
-    async def ports_with_associated_mac(self, mac: str, filter: str | None = None) -> PortResponse:
+    async def ports_with_associated_mac(
+        self, mac: str, filter: str | None = None
+    ) -> PortResponse:
         """Search for ports matching a MAC address.
 
         Route: GET /api/v0/ports/mac/:search
@@ -67,7 +71,9 @@ class Ports:
         return PortResponse.model_validate(data)
 
     async def get_port_info(
-        self, port_id: int, with_relations: Literal["vlans", "device", "statistics"] | None = None
+        self,
+        port_id: int,
+        with_relations: Literal["vlans", "device", "statistics"] | None = None,
     ) -> PortResponse:
         """Get all info for a particular port.
 
@@ -91,7 +97,9 @@ class Ports:
         data = await self._client._get(f"/ports/{port_id}/ip")
         return PortIpResponse.model_validate(data)
 
-    async def get_port_transceiver(self, port_id: int) -> PortTransceiverResponse:
+    async def get_port_transceiver(
+        self, port_id: int
+    ) -> PortTransceiverResponse:
         """Get transceiver info with metrics for a port.
 
         Route: GET /api/v0/ports/:portid/transceiver
@@ -100,7 +108,9 @@ class Ports:
         data = await self._client._get(f"/ports/{port_id}/transceiver")
         return PortTransceiverResponse.model_validate(data)
 
-    async def get_port_description(self, port_id: int) -> PortDescriptionResponse:
+    async def get_port_description(
+        self, port_id: int
+    ) -> PortDescriptionResponse:
         """Get the description (ifAlias) for a given port id.
 
         Route: GET /api/v0/ports/:portid/description
@@ -109,7 +119,9 @@ class Ports:
         data = await self._client._get(f"/ports/{port_id}/description")
         return PortDescriptionResponse.model_validate(data)
 
-    async def update_port_description(self, port_id: int, description: str) -> ApiResponse:
+    async def update_port_description(
+        self, port_id: int, description: str
+    ) -> ApiResponse:
         """Change the description (ifAlias) for a given port id.
 
         Route: PATCH /api/v0/ports/:portid/description

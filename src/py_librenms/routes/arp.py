@@ -13,7 +13,9 @@ class Arp:
     def __init__(self, client: ClientProtocol) -> None:
         self._client = client
 
-    async def list_arp(self, query: str, device: str | None = None) -> ArpResponse:
+    async def list_arp(
+        self, query: str, device: str | None = None
+    ) -> ArpResponse:
         """Retrieve a specific ARP entry or all ARP entries for a device.
 
         Route: GET /api/v0/resources/ip/arp/:query
@@ -24,7 +26,9 @@ class Arp:
         params = {}
         if device is not None:
             params["device"] = device
-        data = await self._client._get(f"/resources/ip/arp/{query}", params=params)
+        data = await self._client._get(
+            f"/resources/ip/arp/{query}", params=params
+        )
         return ArpResponse.model_validate(data)
 
 

@@ -13,7 +13,12 @@ from ..models.devices import (
     DevicesResponse,
 )
 from ._synchronicity import synchronizer
-from ._types import ClientProtocol, _compact, _graph_params, _validate_maintenance_params
+from ._types import (
+    ClientProtocol,
+    _compact,
+    _graph_params,
+    _validate_maintenance_params,
+)
 
 DeviceListType = Literal[
     "all",
@@ -107,7 +112,10 @@ class Devices:
         return ApiResponse.model_validate(data)
 
     async def list_available_health_graphs(
-        self, hostname: str, type: str | None = None, sensor_id: int | None = None
+        self,
+        hostname: str,
+        type: str | None = None,
+        sensor_id: int | None = None,
     ) -> ApiResponse:
         """List available health graphs for a device.
 
@@ -126,7 +134,10 @@ class Devices:
         return ApiResponse.model_validate(data)
 
     async def list_available_wireless_graphs(
-        self, hostname: str, type: str | None = None, sensor_id: int | None = None
+        self,
+        hostname: str,
+        type: str | None = None,
+        sensor_id: int | None = None,
     ) -> ApiResponse:
         """List available wireless graphs for a device.
 
@@ -160,7 +171,9 @@ class Devices:
             params["class"] = cls
         if columns is not None:
             params["columns"] = columns
-        data = await self._client._get(f"/devices/{hostname}/wireless-sensors", params=params)
+        data = await self._client._get(
+            f"/devices/{hostname}/wireless-sensors", params=params
+        )
         return ApiResponse.model_validate(data)
 
     async def get_health_graph(
@@ -217,8 +230,12 @@ class Devices:
         :param height: Graph height in pixels.
         :param output: Output format (e.g. 'base64').
         """
-        params = _graph_params(from_time, to_time, width, height, output=output)
-        return await self._client._get_bytes(f"/devices/{hostname}/{type}", params=params)
+        params = _graph_params(
+            from_time, to_time, width, height, output=output
+        )
+        return await self._client._get_bytes(
+            f"/devices/{hostname}/{type}", params=params
+        )
 
     async def get_graph_by_service(
         self,
@@ -249,7 +266,10 @@ class Devices:
         )
 
     async def get_device_ports(
-        self, hostname: str, columns: str | None = None, with_vlans: bool = False
+        self,
+        hostname: str,
+        columns: str | None = None,
+        with_vlans: bool = False,
     ) -> DevicePortsResponse:
         """Get a list of ports for a particular device.
 
@@ -264,7 +284,9 @@ class Devices:
             params["columns"] = columns
         if with_vlans:
             params["with"] = "vlans"
-        data = await self._client._get(f"/devices/{hostname}/ports", params=params)
+        data = await self._client._get(
+            f"/devices/{hostname}/ports", params=params
+        )
         return DevicePortsResponse.model_validate(data)
 
     async def get_device_fdb(self, hostname: str) -> DeviceFdbResponse:
@@ -297,7 +319,9 @@ class Devices:
         data = await self._client._get(f"/devices/{hostname}/ip")
         return ApiResponse.model_validate(data)
 
-    async def get_port_stack(self, hostname: str, valid_mappings: bool = False) -> ApiResponse:
+    async def get_port_stack(
+        self, hostname: str, valid_mappings: bool = False
+    ) -> ApiResponse:
         """Get a list of port mappings for a device.
 
         Route: GET /api/v0/devices/:hostname/port_stack
@@ -308,7 +332,9 @@ class Devices:
         params = {}
         if valid_mappings:
             params["valid_mappings"] = 1
-        data = await self._client._get(f"/devices/{hostname}/port_stack", params=params)
+        data = await self._client._get(
+            f"/devices/{hostname}/port_stack", params=params
+        )
         return ApiResponse.model_validate(data)
 
     async def get_device_transceivers(self, hostname: str) -> ApiResponse:
@@ -344,9 +370,16 @@ class Devices:
         :param ignore: Filter by ignore state (0 or 1).
         """
         params = _compact(
-            type=type, id=id, label=label, status=status, disabled=disabled, ignore=ignore
+            type=type,
+            id=id,
+            label=label,
+            status=status,
+            disabled=disabled,
+            ignore=ignore,
         )
-        data = await self._client._get(f"/devices/{hostname}/components", params=params)
+        data = await self._client._get(
+            f"/devices/{hostname}/components", params=params
+        )
         return ComponentsResponse.model_validate(data)
 
     async def add_components(self, hostname: str, type: str) -> ApiResponse:
@@ -357,10 +390,14 @@ class Devices:
         :param hostname: Device hostname or ID.
         :param type: Component type to create.
         """
-        data = await self._client._post(f"/devices/{hostname}/components/{type}")
+        data = await self._client._post(
+            f"/devices/{hostname}/components/{type}"
+        )
         return ApiResponse.model_validate(data)
 
-    async def edit_components(self, hostname: str, components: dict) -> ApiResponse:
+    async def edit_components(
+        self, hostname: str, components: dict
+    ) -> ApiResponse:
         """Edit an existing component on a particular device.
 
         Route: PUT /api/v0/devices/:hostname/components
@@ -368,10 +405,14 @@ class Devices:
         :param hostname: Device hostname or ID.
         :param components: Dict of component data keyed by component ID.
         """
-        data = await self._client._put(f"/devices/{hostname}/components", json=components)
+        data = await self._client._put(
+            f"/devices/{hostname}/components", json=components
+        )
         return ApiResponse.model_validate(data)
 
-    async def delete_components(self, hostname: str, component_id: int) -> ApiResponse:
+    async def delete_components(
+        self, hostname: str, component_id: int
+    ) -> ApiResponse:
         """Delete an existing component on a particular device.
 
         Route: DELETE /api/v0/devices/:hostname/components/:component
@@ -379,7 +420,9 @@ class Devices:
         :param hostname: Device hostname or ID.
         :param component_id: ID of the component to delete.
         """
-        data = await self._client._delete(f"/devices/{hostname}/components/{component_id}")
+        data = await self._client._delete(
+            f"/devices/{hostname}/components/{component_id}"
+        )
         return ApiResponse.model_validate(data)
 
     async def get_port_stats_by_port_hostname(
@@ -396,7 +439,9 @@ class Devices:
         params = {}
         if columns is not None:
             params["columns"] = columns
-        data = await self._client._get(f"/devices/{hostname}/ports/{ifname}", params=params)
+        data = await self._client._get(
+            f"/devices/{hostname}/ports/{ifname}", params=params
+        )
         return ApiResponse.model_validate(data)
 
     async def get_graph_by_port_hostname(
@@ -425,7 +470,9 @@ class Devices:
         :param if_descr: If True, use ifDescr instead of ifName to match port.
         :param graph_type: Optional override graph type.
         """
-        params = _graph_params(from_time, to_time, width, height, graph_type=graph_type)
+        params = _graph_params(
+            from_time, to_time, width, height, graph_type=graph_type
+        )
         if if_descr:
             params["ifDescr"] = "true"
         return await self._client._get_bytes(
@@ -516,9 +563,13 @@ class Devices:
         _validate_maintenance_params(duration, start)
         payload: dict = {
             "duration": duration,
-            **_compact(title=title, notes=notes, start=start, behavior=behavior),
+            **_compact(
+                title=title, notes=notes, start=start, behavior=behavior
+            ),
         }
-        data = await self._client._post(f"/devices/{hostname}/maintenance", json=payload)
+        data = await self._client._post(
+            f"/devices/{hostname}/maintenance", json=payload
+        )
         return ApiResponse.model_validate(data)
 
     async def add_device(self, hostname: str, **kwargs) -> ApiResponse:
@@ -567,7 +618,9 @@ class Devices:
         )
         return ApiResponse.model_validate(resp)
 
-    async def update_device_port_notes(self, hostname: str, portid: int, notes: str) -> ApiResponse:
+    async def update_device_port_notes(
+        self, hostname: str, portid: int, notes: str
+    ) -> ApiResponse:
         """Update a device port notes field.
 
         Route: PATCH /api/v0/devices/:hostname/port/:portid
@@ -581,7 +634,9 @@ class Devices:
         )
         return ApiResponse.model_validate(data)
 
-    async def rename_device(self, hostname: str, new_hostname: str) -> ApiResponse:
+    async def rename_device(
+        self, hostname: str, new_hostname: str
+    ) -> ApiResponse:
         """Rename a device.
 
         Route: PATCH /api/v0/devices/:hostname/rename/:new_hostname
@@ -589,7 +644,9 @@ class Devices:
         :param hostname: Current device hostname or ID.
         :param new_hostname: New hostname for the device.
         """
-        data = await self._client._patch(f"/devices/{hostname}/rename/{new_hostname}")
+        data = await self._client._patch(
+            f"/devices/{hostname}/rename/{new_hostname}"
+        )
         return ApiResponse.model_validate(data)
 
     async def get_device_groups(self, hostname: str) -> ApiResponse:
@@ -609,7 +666,9 @@ class Devices:
 
         :param searchstring: String to search for in device configs.
         """
-        data = await self._client._get(f"/oxidized/config/search/{searchstring}")
+        data = await self._client._get(
+            f"/oxidized/config/search/{searchstring}"
+        )
         return ApiResponse.model_validate(data)
 
     async def get_oxidized_config(self, hostname: str) -> ApiResponse:
@@ -622,7 +681,9 @@ class Devices:
         data = await self._client._get(f"/oxidized/config/{hostname}")
         return ApiResponse.model_validate(data)
 
-    async def add_parents_to_host(self, device: str, parent_ids: str) -> ApiResponse:
+    async def add_parents_to_host(
+        self, device: str, parent_ids: str
+    ) -> ApiResponse:
         """Add one or more parents to a host.
 
         Route: POST /api/v0/devices/:device/parents
@@ -648,8 +709,12 @@ class Devices:
         payload = {}
         if parent_ids is not None:
             payload["parent_ids"] = parent_ids
-        data = await self._client._delete(f"/devices/{device}/parents", json=payload)
+        data = await self._client._delete(
+            f"/devices/{device}/parents", json=payload
+        )
         return ApiResponse.model_validate(data)
 
 
-DevicesSync = synchronizer.wrap(Devices, name="DevicesSync", target_module=__name__)
+DevicesSync = synchronizer.wrap(
+    Devices, name="DevicesSync", target_module=__name__
+)

@@ -21,7 +21,9 @@ class TestDevices:
         response = client.devices.list_sensors()
         assert response.status == "ok"
 
-    @pytest.mark.xfail(reason="May fail if no devices with Oxidized configured")
+    @pytest.mark.xfail(
+        reason="May fail if no devices with Oxidized configured"
+    )
     def test_list_oxidized(self, client):
         response = client.devices.list_oxidized()
         assert isinstance(response, list)

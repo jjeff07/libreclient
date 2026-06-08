@@ -31,7 +31,9 @@ class Portgroups:
         :param height: Graph height in pixels.
         """
         params = _graph_params(from_time, to_time, width, height)
-        return await self._client._get_bytes(f"/portgroups/{group}", params=params)
+        return await self._client._get_bytes(
+            f"/portgroups/{group}", params=params
+        )
 
     async def get_graph_by_portgroup_multiport_bits(
         self,
@@ -57,4 +59,6 @@ class Portgroups:
         )
 
 
-PortgroupsSync = synchronizer.wrap(Portgroups, name="PortgroupsSync", target_module=__name__)
+PortgroupsSync = synchronizer.wrap(
+    Portgroups, name="PortgroupsSync", target_module=__name__
+)

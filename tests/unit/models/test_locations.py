@@ -9,7 +9,9 @@ class TestLocationsResponse:
             "status": "ok",
             "message": "",
             "count": 1,
-            "locations": [{"id": 1, "location": "DC1", "lat": 40.0, "lng": -74.0}],
+            "locations": [
+                {"id": 1, "location": "DC1", "lat": 40.0, "lng": -74.0}
+            ],
         }
         r = LocationsResponse.model_validate(data)
         assert r.data[0]["location"] == "DC1"
