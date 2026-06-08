@@ -1,0 +1,7 @@
+# LibreNMS upstream API doc tracking.
+# Records which LibreNMS release tag our route implementations are based on.
+
+[upstream]
+repo = "librenms/librenms"
+pinned_tag = "26.5.1"
+docs_path = "doc/API"

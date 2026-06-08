@@ -1,0 +1,89 @@
+[project]
+name = "py-librenms"
+version = "0.1.0"
+description = "Async and sync Python client for the LibreNMS API"
+readme = "README.md"
+authors = [
+    { name = "Justin Jeffery", email = "34625666+jjeff07@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+    "niquests>=3.19.0",
+    "pydantic>=2.13.4",
+    "pydantic-settings>=2.14.1",
+    "synchronicity>=0.12.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/jjeff07/py-librenms"
+Repository = "https://github.com/jjeff07/py-librenms.git"
+Issues = "https://github.com/jjeff07/py-librenms/issues"
+Changelog = "https://github.com/jjeff07/py-librenms/blob/main/CHANGELOG.md"
+
+
+[build-system]
+requires = ["uv_build>=0.11.2,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "commitizen>=4.16.3",
+    "complexipy>=5.5.0",
+    "pytest>=9.0.3",
+    "python-dotenv>=1.2.2",
+    "ruff>=0.15.16",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "functional: requires a live LibreNMS instance (deselect with '-m not functional')",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+extend-exclude = ["src/py_librenms/routes/*.pyi", "generate_stubs.py"]
+
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "N",     # pep8-naming
+    "UP",    # pyupgrade
+    "B",     # flake8-bugbear
+    "SIM",   # flake8-simplify
+    "TCH",   # flake8-type-checking
+    "RUF",   # ruff-specific rules
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # do not perform function calls in argument defaults
+    "TC001", # move import into type-checking block (breaks synchronicity runtime)
+    "TC003", # move stdlib import into type-checking block
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["py_librenms"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.complexipy]
+paths = ["src"]
+max-complexity-allowed = 15
+exclude = ["generate_stubs.py"]
+output-format = ["json"]
+output = "complexipy-results.json"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+tag_format = "$version"
+version_files = ["pyproject.toml:^version"]
