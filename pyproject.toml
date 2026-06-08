@@ -46,7 +46,7 @@ markers = [
 target-version = "py312"
 line-length = 79
 src = ["src", "tests"]
-extend-exclude = ["src/py_librenms/routes/*.pyi", "generate_stubs.py"]
+extend-exclude = ["src/py_librenms/routes/*.pyi", "generate_stubs.py", "check_upstream.py"]
 
 [tool.ruff.lint]
 select = [
@@ -78,7 +78,7 @@ indent-style = "space"
 [tool.complexipy]
 paths = ["src"]
 max-complexity-allowed = 15
-exclude = ["generate_stubs.py"]
+exclude = ["generate_stubs.py", "check_upstream.py"]
 output-format = ["json"]
 output = "complexipy-results.json"
 
