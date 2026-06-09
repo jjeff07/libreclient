@@ -1,13 +1,16 @@
 name: Release
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       bump:
-        description: "Version bump type"
-        required: true
+        description: "Version bump override (leave empty to auto-detect)"
+        required: false
         type: choice
         options:
+          - ""
           - patch
           - minor
           - major
@@ -15,20 +18,39 @@ on:
         description: "Dry run (build only, no publish/push)"
         required: false
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: write
   id-token: write
+  pull-requests: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
     name: Bump, Changelog, Build & Tag
     runs-on: ubuntu-latest
+    # Skip release commits pushed by the bot to prevent loops
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      !startsWith(github.event.head_commit.message || '', 'release:')
     outputs:
       version: ${{ steps.bump.outputs.version }}
+      skipped: ${{ steps.decide.outputs.skip }}
+      dry_run: ${{ steps.set-dry-run.outputs.dry_run }}
 
     steps:
+      - name: Resolve dry_run flag
+        id: set-dry-run
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "dry_run=${{ inputs.dry_run }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "dry_run=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Generate app token
         id: app-token
         uses: actions/create-github-app-token@v3
@@ -53,20 +75,123 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      # --- Determine Bump Type ---
+      - name: Determine version bump
+        id: decide
+        uses: actions/github-script@v9
+        with:
+          script: |
+            // Manual override takes priority
+            const manualBump = '${{ inputs.bump }}';
+            if (manualBump) {
+              core.setOutput('bump', manualBump);
+              core.setOutput('skip', 'false');
+              core.info(`Manual override: ${manualBump}`);
+              return;
+            }
+
+            // Check PR labels for override
+            let labels = [];
+            if (context.eventName === 'push') {
+              const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: context.sha,
+              });
+              if (prs.length > 0) {
+                labels = prs[0].labels.map(l => l.name);
+              }
+            }
+
+            // Label override
+            if (labels.includes('bump:major')) {
+              core.setOutput('bump', 'major');
+              core.setOutput('skip', 'false');
+              core.info('Label override: major');
+              return;
+            }
+            if (labels.includes('bump:minor')) {
+              core.setOutput('bump', 'minor');
+              core.setOutput('skip', 'false');
+              core.info('Label override: minor');
+              return;
+            }
+            if (labels.includes('bump:patch')) {
+              core.setOutput('bump', 'patch');
+              core.setOutput('skip', 'false');
+              core.info('Label override: patch');
+              return;
+            }
+            if (labels.includes('no-release')) {
+              core.setOutput('skip', 'true');
+              core.info('Skipping release: no-release label');
+              return;
+            }
+
+            // Auto-detect from conventional commits since last tag
+            const { execSync } = require('child_process');
+            let commits;
+            try {
+              const prevTag = execSync('git describe --tags --abbrev=0 2>/dev/null', { encoding: 'utf8' }).trim();
+              commits = execSync(`git log ${prevTag}..HEAD --pretty=format:"%s" --no-merges`, { encoding: 'utf8' });
+            } catch {
+              commits = execSync('git log --pretty=format:"%s" --no-merges', { encoding: 'utf8' });
+            }
+
+            const lines = commits.split('\n').filter(Boolean);
+
+            if (lines.length === 0) {
+              core.setOutput('skip', 'true');
+              core.info('No commits since last tag');
+              return;
+            }
+
+            let bump = 'skip';
+            for (const msg of lines) {
+              if (msg.includes('BREAKING CHANGE') || /^[a-z]+(\(.+\))?!:/.test(msg)) {
+                bump = 'major';
+                break;
+              }
+              if (/^feat(\(.+\))?:/.test(msg)) {
+                bump = 'minor';
+              }
+              if (bump === 'skip' && /^(fix|perf)(\(.+\))?:/.test(msg)) {
+                bump = 'patch';
+              }
+            }
+
+            if (bump === 'skip') {
+              core.setOutput('skip', 'true');
+              core.info('No releasable commits (chore/docs/ci only)');
+              return;
+            }
+
+            core.setOutput('bump', bump);
+            core.setOutput('skip', 'false');
+            core.info(`Auto-detected bump: ${bump}`);
+
+      # --- Stop here if no release needed ---
+      - name: Skip if no release
+        if: steps.decide.outputs.skip == 'true'
+        run: echo "No releasable changes — skipping release."
+
       # --- Version Bump ---
       - name: Get current version
+        if: steps.decide.outputs.skip != 'true'
         id: current
         run: echo "version=$(uv version --short)" >> "$GITHUB_OUTPUT"
 
       - name: Bump version
+        if: steps.decide.outputs.skip != 'true'
         id: bump
         run: |
-          uv version --bump ${{ inputs.bump }}
+          uv version --bump ${{ steps.decide.outputs.bump }}
           echo "version=$(uv version --short)" >> "$GITHUB_OUTPUT"
           echo "Bumped version: ${{ steps.current.outputs.version }} → $(uv version --short)"
 
       # --- Changelog ---
       - name: Generate changelog entry
+        if: steps.decide.outputs.skip != 'true'
         run: |
           NEW_VERSION="${{ steps.bump.outputs.version }}"
           DATE=$(date +%Y-%m-%d)
@@ -74,9 +199,9 @@ jobs:
 
           # Get commit messages since last tag (or all if no tags)
           if [ -n "$PREV_TAG" ]; then
-            COMMITS=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s" --no-merges)
+            COMMITS=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s" --no-merges | grep -v "^- release:")
           else
-            COMMITS=$(git log --pretty=format:"- %s" --no-merges)
+            COMMITS=$(git log --pretty=format:"- %s" --no-merges | grep -v "^- release:")
           fi
 
           python3 - "$NEW_VERSION" "$DATE" "$PREV_TAG" "$COMMITS" <<'EOF'
@@ -117,47 +242,56 @@ jobs:
 
       # --- Generate Type Stubs ---
       - name: Generate .pyi stubs
+        if: steps.decide.outputs.skip != 'true'
         run: uv run python generate_stubs.py
 
       # --- Build ---
       - name: Build package
+        if: steps.decide.outputs.skip != 'true'
         run: uv build
 
       # --- Upload dist for publish jobs ---
       - name: Upload dist artifacts
+        if: steps.decide.outputs.skip != 'true'
         uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
 
       - name: Show changelog diff
+        if: steps.decide.outputs.skip != 'true'
         run: git diff CHANGELOG.md
 
       # --- Commit & Tag ---
       - name: Commit version bump and changelog
-        if: ${{ inputs.dry_run == false }}
+        if: steps.decide.outputs.skip != 'true' && steps.set-dry-run.outputs.dry_run != 'true'
+        id: commit
         run: |
           git add pyproject.toml uv.lock CHANGELOG.md
-          git commit -m "release: v${{ steps.bump.outputs.version }}"
+          git commit -m "release: v${{ steps.bump.outputs.version }} [skip ci]"
           git tag "v${{ steps.bump.outputs.version }}"
           git push origin HEAD --tags
 
+          # Extract the changelog entry for this version
+          VERSION="${{ steps.bump.outputs.version }}"
+          BODY=$(sed -n "/^## \[${VERSION}\]/,/^## \[/{ /^## \[${VERSION}\]/p; /^## \[${VERSION}\]/!{ /^## \[/!p; } }" CHANGELOG.md)
+          # Write to file to avoid escaping issues
+          echo "$BODY" > /tmp/release-body.md
+
       # --- GitHub Release ---
       - name: Create GitHub Release
-        if: ${{ inputs.dry_run == false }}
+        if: steps.decide.outputs.skip != 'true' && steps.set-dry-run.outputs.dry_run != 'true'
         uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.bump.outputs.version }}
           name: v${{ steps.bump.outputs.version }}
-          body: |
-            ## Changes
-
-            See [CHANGELOG.md](https://github.com/jjeff07/libreclient/blob/main/CHANGELOG.md) for details.
+          body_path: /tmp/release-body.md
           files: dist/*
 
       # --- Sync dev branch ---
       - name: Fast-forward dev to main
-        if: ${{ inputs.dry_run == false }}
+        if: steps.decide.outputs.skip != 'true' && steps.set-dry-run.outputs.dry_run != 'true'
+        continue-on-error: true
         run: |
           git fetch origin dev
           git checkout dev
@@ -167,7 +301,7 @@ jobs:
   publish-testpypi:
     name: Publish to TestPyPI
     needs: release
-    if: ${{ inputs.dry_run == false }}
+    if: needs.release.outputs.skipped != 'true' && needs.release.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
     continue-on-error: true
     environment:
@@ -188,14 +322,14 @@ jobs:
   publish-pypi:
     name: Publish to PyPI
     needs: release
-    if: ${{ inputs.dry_run == false }}
+    if: needs.release.outputs.skipped != 'true' && needs.release.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/project/libreclient/
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/

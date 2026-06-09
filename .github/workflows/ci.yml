@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, dev]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -13,8 +17,14 @@ jobs:
   lint:
     name: Lint & Format
     runs-on: ubuntu-latest
+    if: >-
+      !startsWith(github.event.head_commit.message || '', 'release:')
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref || github.ref }}
 
       - uses: astral-sh/setup-uv@v8.2.0
         with:
@@ -23,15 +33,29 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Ruff check
-        run: uvx ruff check
+      - name: Ruff fix & format
+        if: github.event_name == 'pull_request'
+        run: |
+          uvx ruff check --fix
+          uvx ruff format
 
-      - name: Ruff format check
-        run: uvx ruff format --check
+      - name: Commit fixes
+        if: github.event_name == 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "ci(lint): auto-fix lint and format [skip ci]"
+          git push
+
+      - name: Ruff check (fail on remaining issues)
+        run: uvx ruff check --output-format github
 
   complexity:
     name: Complexity Check
     runs-on: ubuntu-latest
+    if: >-
+      !startsWith(github.event.head_commit.message || '', 'release:')
     steps:
       - uses: actions/checkout@v6
 
@@ -48,6 +72,8 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
+    if: >-
+      !startsWith(github.event.head_commit.message || '', 'release:')
     strategy:
       matrix:
         python-version: ["3.12", "3.13"]
@@ -63,3 +89,21 @@ jobs:
 
       - name: Run tests
         run: uv run pytest --tb=short
+
+  # Gate job — add "ci-pass" as a required status check in your ruleset
+  ci-pass:
+    name: CI Pass
+    if: always()
+    needs: [lint, complexity, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [ "${{ needs.lint.result }}" = "failure" ] || \
+             [ "${{ needs.complexity.result }}" = "failure" ] || \
+             [ "${{ needs.test.result }}" = "failure" ]; then
+            echo "One or more CI jobs failed."
+            exit 1
+          fi
+          echo "All CI jobs passed."
+
