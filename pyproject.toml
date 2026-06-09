@@ -1,6 +1,6 @@
 [project]
 name = "libreclient"
-version = "0.1.1"
+version = "0.1.2"
 description = "Async and sync Python client for the LibreNMS API"
 readme = "README.md"
 authors = [
