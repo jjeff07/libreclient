@@ -18,21 +18,20 @@ permissions:
 
 jobs:
   release:
-    name: Bump, Changelog, Build & Publish
+    name: Bump, Changelog, Build & Tag
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/project/libreclient/
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
 
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@v8.2.0
         with:
-          enable-cache: true
+          enable-cache: "true"
 
       - name: Install dependencies
         run: uv sync
@@ -91,25 +90,24 @@ jobs:
       - name: Build package
         run: uv build
 
+      # --- Upload dist for publish jobs ---
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
       # --- Commit & Tag ---
       - name: Commit version bump and changelog
         run: |
-          git add pyproject.toml uv.lock CHANGELOG.md
+          git add pyproject.toml uv.lock CHANGELOG.md src/
           git commit -m "release: v${{ steps.bump.outputs.version }}"
           git tag "v${{ steps.bump.outputs.version }}"
           git push origin HEAD --tags
 
-      # --- Publish ---
-      - name: Publish to TestPyPI
-        continue-on-error: true
-        run: uv publish --index-url https://test.pypi.org/legacy/
-
-      - name: Publish to PyPI
-        run: uv publish
-
       # --- GitHub Release ---
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.bump.outputs.version }}
           name: v${{ steps.bump.outputs.version }}
@@ -126,3 +124,42 @@ jobs:
           git checkout dev
           git merge --ff-only origin/main
           git push origin dev
+
+  publish-testpypi:
+    name: Publish to TestPyPI
+    needs: release
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/libreclient/
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - uses: astral-sh/setup-uv@v8.2.0
+
+      - name: Publish to TestPyPI
+        run: uv publish --index-url https://test.pypi.org/legacy/
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/libreclient/
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: astral-sh/setup-uv@v8.2.0
+
+      - name: Publish to PyPI
+        run: uv publish

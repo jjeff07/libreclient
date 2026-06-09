@@ -11,11 +11,11 @@ jobs:
     name: Lint & Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@v8.2.0
         with:
-          enable-cache: true
+          enable-cache: "true"
 
       - name: Install dependencies
         run: uv sync
@@ -30,11 +30,11 @@ jobs:
     name: Complexity Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@v8.2.0
         with:
-          enable-cache: true
+          enable-cache: "true"
 
       - name: Install dependencies
         run: uv sync
@@ -49,15 +49,14 @@ jobs:
       matrix:
         python-version: ["3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@v8.2.0
         with:
-          enable-cache: true
+          enable-cache: "true"
 
       - name: Install dependencies
         run: uv sync --python ${{ matrix.python-version }}
 
       - name: Run tests
         run: uv run pytest --tb=short
-
