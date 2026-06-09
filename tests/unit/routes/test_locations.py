@@ -2,9 +2,9 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.locations import LocationsResponse
-from py_librenms.routes.locations import Locations
+from libreclient.models._base import ApiResponse
+from libreclient.models.locations import LocationsResponse
+from libreclient.routes.locations import Locations
 
 
 class TestListLocations:

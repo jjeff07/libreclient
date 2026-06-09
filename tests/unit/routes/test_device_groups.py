@@ -2,12 +2,12 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.device_groups import (
+from libreclient.models._base import ApiResponse
+from libreclient.models.device_groups import (
     DeviceGroupDevicesResponse,
     DeviceGroupsResponse,
 )
-from py_librenms.routes.device_groups import DeviceGroups
+from libreclient.routes.device_groups import DeviceGroups
 
 
 class TestGetDevicegroups:

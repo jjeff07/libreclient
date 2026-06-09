@@ -2,8 +2,8 @@
 
 import asyncio
 
-from py_librenms.models.index import IndexResponse
-from py_librenms.routes.index import Index
+from libreclient.models.index import IndexResponse
+from libreclient.routes.index import Index
 
 
 class TestListApiEndpoints:

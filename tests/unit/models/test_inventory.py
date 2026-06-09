@@ -1,6 +1,6 @@
 """Unit tests for Inventory response models."""
 
-from py_librenms.models.inventory import InventoryResponse
+from libreclient.models.inventory import InventoryResponse
 
 
 class TestInventoryResponse:

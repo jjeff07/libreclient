@@ -2,9 +2,9 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.port_groups import PortGroupsResponse
-from py_librenms.routes.port_groups import PortGroups
+from libreclient.models._base import ApiResponse
+from libreclient.models.port_groups import PortGroupsResponse
+from libreclient.routes.port_groups import PortGroups
 
 
 class TestGetPortGroups:

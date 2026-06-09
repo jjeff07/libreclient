@@ -2,14 +2,14 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.alerts import (
+from libreclient.models._base import ApiResponse
+from libreclient.models.alerts import (
     AlertsResponse,
     AlertTemplateCreatedResponse,
     AlertTemplatesResponse,
     RulesResponse,
 )
-from py_librenms.routes.alerts import Alerts
+from libreclient.routes.alerts import Alerts
 
 
 class TestGetAlert:

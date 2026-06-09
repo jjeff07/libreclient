@@ -1,6 +1,6 @@
 """Unit tests for ARP response models."""
 
-from py_librenms.models.arp import ArpResponse
+from libreclient.models.arp import ArpResponse
 
 
 class TestArpResponse:

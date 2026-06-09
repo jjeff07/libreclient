@@ -1,6 +1,6 @@
 """Unit tests for Routing response models."""
 
-from py_librenms.models.routing import RoutingResponse
+from libreclient.models.routing import RoutingResponse
 
 
 class TestRoutingResponse:

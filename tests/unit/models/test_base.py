@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from py_librenms.models import ApiResponse, ApiResponseWithId, ListResponse
+from libreclient.models import ApiResponse, ApiResponseWithId, ListResponse
 
 
 class TestApiResponse:

@@ -1,6 +1,6 @@
 """Unit tests for Device Groups response models."""
 
-from py_librenms.models.device_groups import (
+from libreclient.models.device_groups import (
     DeviceGroupDevicesResponse,
     DeviceGroupsResponse,
 )

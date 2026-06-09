@@ -1,4 +1,4 @@
-# py-librenms
+# libreclient
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
@@ -12,13 +12,13 @@ Async and sync Python client for the [LibreNMS](https://www.librenms.org/) API.
 ## Installation
 
 ```bash
-pip install py-librenms
+pip install libreclient
 ```
 
 Or with [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uv add py-librenms
+uv add libreclient
 ```
 
 ## Quick Start
@@ -26,7 +26,7 @@ uv add py-librenms
 ### Synchronous
 
 ```python
-from py_librenms import LibreClientSync
+from libreclient import LibreClientSync
 
 client = LibreClientSync(url="https://librenms.example.com", token="your-api-token")
 
@@ -43,7 +43,7 @@ alert = client.alerts.get_alert(42)
 
 ```python
 import asyncio
-from py_librenms import LibreClientAsync
+from libreclient import LibreClientAsync
 
 
 async def main():
@@ -127,8 +127,8 @@ All route namespaces are accessible as properties on the client:
 ### Setup
 
 ```bash
-git clone https://github.com/jjeff07/py-librenms.git
-cd py-librenms
+git clone https://github.com/jjeff07/libreclient.git
+cd libreclient
 uv sync
 ```
 
@@ -270,7 +270,7 @@ python check_upstream.py --bump
 ### Project Structure
 
 ```
-py-librenms/
+libreclient/
 ├── src/py_librenms/
 │   ├── __init__.py            # Public API exports
 │   ├── client.py              # LibreClientSync & LibreClientAsync

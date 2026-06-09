@@ -1,5 +1,5 @@
 [project]
-name = "py-librenms"
+name = "libreclient"
 version = "0.1.0"
 description = "Async and sync Python client for the LibreNMS API"
 readme = "README.md"
@@ -16,10 +16,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jjeff07/py-librenms"
-Repository = "https://github.com/jjeff07/py-librenms.git"
-Issues = "https://github.com/jjeff07/py-librenms/issues"
-Changelog = "https://github.com/jjeff07/py-librenms/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/jjeff07/libreclient"
+Repository = "https://github.com/jjeff07/libreclient.git"
+Issues = "https://github.com/jjeff07/libreclient/issues"
+Changelog = "https://github.com/jjeff07/libreclient/blob/main/CHANGELOG.md"
 
 
 [build-system]
@@ -46,7 +46,7 @@ markers = [
 target-version = "py312"
 line-length = 79
 src = ["src", "tests"]
-extend-exclude = ["src/py_librenms/routes/*.pyi", "generate_stubs.py", "check_upstream.py"]
+extend-exclude = ["src/libreclient/routes/*.pyi", "generate_stubs.py", "check_upstream.py"]
 
 [tool.ruff.lint]
 select = [
@@ -69,7 +69,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["py_librenms"]
+known-first-party = ["libreclient"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -87,3 +87,9 @@ name = "cz_conventional_commits"
 version = "0.1.0"
 tag_format = "$version"
 version_files = ["pyproject.toml:^version"]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true

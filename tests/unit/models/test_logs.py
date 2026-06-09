@@ -1,6 +1,6 @@
 """Unit tests for Logs response models."""
 
-from py_librenms.models.logs import LogsResponse
+from libreclient.models.logs import LogsResponse
 
 
 class TestLogsResponse:

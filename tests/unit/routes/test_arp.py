@@ -2,8 +2,8 @@
 
 import asyncio
 
-from py_librenms.models.arp import ArpResponse
-from py_librenms.routes.arp import Arp
+from libreclient.models.arp import ArpResponse
+from libreclient.routes.arp import Arp
 
 
 class TestListArp:

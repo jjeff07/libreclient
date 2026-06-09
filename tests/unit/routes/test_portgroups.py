@@ -2,7 +2,7 @@
 
 import asyncio
 
-from py_librenms.routes.portgroups import Portgroups
+from libreclient.routes.portgroups import Portgroups
 
 
 class TestGetGraphByPortgroup:

@@ -2,9 +2,9 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.services import ServicesResponse
-from py_librenms.routes.services import Services
+from libreclient.models._base import ApiResponse
+from libreclient.models.services import ServicesResponse
+from libreclient.routes.services import Services
 
 
 class TestListServices:

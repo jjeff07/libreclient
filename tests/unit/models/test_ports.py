@@ -1,6 +1,6 @@
 """Unit tests for Ports response models."""
 
-from py_librenms.models.ports import PortsResponse
+from libreclient.models.ports import PortsResponse
 
 
 class TestPortsResponse:

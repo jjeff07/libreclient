@@ -1,6 +1,6 @@
 """Unit tests for Switching response models."""
 
-from py_librenms.models.switching import SwitchingResponse
+from libreclient.models.switching import SwitchingResponse
 
 
 class TestSwitchingResponse:

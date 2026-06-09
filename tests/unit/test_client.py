@@ -1,7 +1,7 @@
 import asyncio
 
-from py_librenms.client import LibreClientAsync, LibreClientSync
-from py_librenms.config import LibreConfig
+from libreclient.client import LibreClientAsync, LibreClientSync
+from libreclient.config import LibreConfig
 
 
 def test_sync_client_sets_headers_and_verify() -> None:

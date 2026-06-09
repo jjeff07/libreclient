@@ -1,6 +1,6 @@
 """Unit tests for Devices response models."""
 
-from py_librenms.models.devices import (
+from libreclient.models.devices import (
     ComponentsResponse,
     DeviceFdbResponse,
     DevicePortsResponse,

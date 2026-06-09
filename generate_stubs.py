@@ -9,7 +9,7 @@ that directly declare sync method signatures.
 import ast
 from pathlib import Path
 
-ROUTES_DIR = Path("src/py_librenms/routes")
+ROUTES_DIR = Path("src/libreclient/routes")
 
 
 def generate_stub_from_async_source(async_source: str) -> str:

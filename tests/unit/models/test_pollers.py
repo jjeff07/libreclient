@@ -1,6 +1,6 @@
 """Unit tests for Pollers response models."""
 
-from py_librenms.models.pollers import PollersResponse
+from libreclient.models.pollers import PollersResponse
 
 
 class TestPollersResponse:

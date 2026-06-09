@@ -1,6 +1,6 @@
 """Unit tests for Locations response models."""
 
-from py_librenms.models.locations import LocationsResponse
+from libreclient.models.locations import LocationsResponse
 
 
 class TestLocationsResponse:

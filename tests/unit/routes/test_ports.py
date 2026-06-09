@@ -2,9 +2,9 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.ports import PortResponse, PortsResponse
-from py_librenms.routes.ports import Ports
+from libreclient.models._base import ApiResponse
+from libreclient.models.ports import PortResponse, PortsResponse
+from libreclient.routes.ports import Ports
 
 
 class TestGetAllPorts:

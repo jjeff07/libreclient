@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from py_librenms.config import LibreConfig
+from libreclient.config import LibreConfig
 
 
 def test_config_defaults_without_api_in_url() -> None:

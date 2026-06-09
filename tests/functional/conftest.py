@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 
-from py_librenms import LibreClientSync
+from libreclient import LibreClientSync
 
 # Load .env from project root
 _env_path = Path(__file__).resolve().parents[2] / ".env"

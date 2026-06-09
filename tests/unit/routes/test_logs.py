@@ -2,9 +2,9 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.logs import LogsResponse
-from py_librenms.routes.logs import Logs
+from libreclient.models._base import ApiResponse
+from libreclient.models.logs import LogsResponse
+from libreclient.routes.logs import Logs
 
 
 class TestListEventlog:

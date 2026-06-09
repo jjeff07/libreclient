@@ -1,6 +1,6 @@
 """Unit tests for Alerts response models."""
 
-from py_librenms.models.alerts import (
+from libreclient.models.alerts import (
     AlertsResponse,
     AlertTemplateCreatedResponse,
     AlertTemplatesResponse,

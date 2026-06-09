@@ -2,9 +2,9 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.bills import BillHistoryResponse, BillsResponse
-from py_librenms.routes.bills import Bills
+from libreclient.models._base import ApiResponse
+from libreclient.models.bills import BillHistoryResponse, BillsResponse
+from libreclient.routes.bills import Bills
 
 
 class TestListBills:

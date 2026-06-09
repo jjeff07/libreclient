@@ -1,0 +1,6 @@
+#!/bin/sh
+# Conventional Commits validation via commitizen.
+# Install: git config core.hooksPath .githooks
+
+# Use python -m to avoid Windows .exe access issues
+exec python -m commitizen check --commit-msg-file "$1"

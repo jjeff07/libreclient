@@ -2,8 +2,8 @@
 
 import asyncio
 
-from py_librenms.models.pollers import PollersResponse
-from py_librenms.routes.pollers import Pollers
+from libreclient.models.pollers import PollersResponse
+from libreclient.routes.pollers import Pollers
 
 
 class TestListPollers:

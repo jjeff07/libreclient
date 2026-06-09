@@ -1,6 +1,6 @@
 """Unit tests for System response models."""
 
-from py_librenms.models.system import SystemResponse
+from libreclient.models.system import SystemResponse
 
 
 class TestSystemResponse:

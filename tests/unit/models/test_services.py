@@ -1,6 +1,6 @@
 """Unit tests for Services response models."""
 
-from py_librenms.models.services import ServicesResponse
+from libreclient.models.services import ServicesResponse
 
 
 class TestServicesResponse:

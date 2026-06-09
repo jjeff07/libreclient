@@ -18,6 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuration via environment variables using `pydantic-settings`
 - Full unit test suite (137 tests)
 
-[Unreleased]: https://github.com/jjeff07/py-librenms/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/jjeff07/py-librenms/releases/tag/v0.1.0
+[Unreleased]: https://github.com/jjeff07/libreclient/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/jjeff07/libreclient/releases/tag/v0.1.0
 

@@ -2,9 +2,9 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.system import SystemResponse
-from py_librenms.routes.system import System
+from libreclient.models._base import ApiResponse
+from libreclient.models.system import SystemResponse
+from libreclient.routes.system import System
 
 
 class TestPing:

@@ -2,14 +2,14 @@
 
 import asyncio
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.devices import (
+from libreclient.models._base import ApiResponse
+from libreclient.models.devices import (
     ComponentsResponse,
     DevicePortsResponse,
     DeviceResponse,
     DevicesResponse,
 )
-from py_librenms.routes.devices import Devices
+from libreclient.routes.devices import Devices
 
 
 class TestGetDevice:

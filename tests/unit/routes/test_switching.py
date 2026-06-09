@@ -2,8 +2,8 @@
 
 import asyncio
 
-from py_librenms.models.switching import SwitchingResponse
-from py_librenms.routes.switching import Switching
+from libreclient.models.switching import SwitchingResponse
+from libreclient.routes.switching import Switching
 
 
 class TestListVlans:

@@ -1,6 +1,6 @@
 """Unit tests for Bills response models."""
 
-from py_librenms.models.bills import BillHistoryResponse, BillsResponse
+from libreclient.models.bills import BillHistoryResponse, BillsResponse
 
 
 class TestBillsResponse:

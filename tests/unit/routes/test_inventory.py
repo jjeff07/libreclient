@@ -2,8 +2,8 @@
 
 import asyncio
 
-from py_librenms.models.inventory import InventoryResponse
-from py_librenms.routes.inventory import Inventory
+from libreclient.models.inventory import InventoryResponse
+from libreclient.routes.inventory import Inventory
 
 
 class TestGetInventory:

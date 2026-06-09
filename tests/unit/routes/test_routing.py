@@ -4,9 +4,9 @@ import asyncio
 
 import pytest
 
-from py_librenms.models._base import ApiResponse
-from py_librenms.models.routing import RoutingResponse
-from py_librenms.routes.routing import Routing
+from libreclient.models._base import ApiResponse
+from libreclient.models.routing import RoutingResponse
+from libreclient.routes.routing import Routing
 
 
 class TestListBgp:

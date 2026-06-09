@@ -2,8 +2,8 @@
 
 import asyncio
 
-from py_librenms.models.port_security import PortSecurityResponse
-from py_librenms.routes.port_security import PortSecurity
+from libreclient.models.port_security import PortSecurityResponse
+from libreclient.routes.port_security import PortSecurity
 
 
 class TestGetAllPortSecurity:

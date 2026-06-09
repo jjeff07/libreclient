@@ -2,8 +2,8 @@
 
 import asyncio
 
-from py_librenms.models.poller_groups import PollerGroupsResponse
-from py_librenms.routes.poller_groups import PollerGroups
+from libreclient.models.poller_groups import PollerGroupsResponse
+from libreclient.routes.poller_groups import PollerGroups
 
 
 class TestGetPollerGroup:
