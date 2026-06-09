@@ -7,16 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-06-08
+## [0.1.0] - 2026-06-09
 
 ### Added
 
+- Initial release on [PyPI](https://pypi.org/project/libreclient/)
 - Async client (`LibreClientAsync`) and sync client (`LibreClientSync`)
 - Pydantic response models for all API routes
 - Route namespaces: Alerts, ARP, Bills, DeviceGroups, Devices, Index, Inventory, Locations, Logs, PollerGroups, Pollers, PortGroups, PortSecurity, Portgroups, Ports, Routing, Services, Switching, System
 - Auto-generated `.pyi` type stubs for IDE support (`generate_stubs.py`)
 - Configuration via environment variables using `pydantic-settings`
-- Full unit test suite (137 tests)
+- Conventional Commits enforcement via commitizen
+- Upstream API tracking (`check_upstream.py`) pinned to LibreNMS 26.5.1
+- Full unit test suite (140 tests) and functional test suite (41 tests)
 
 [Unreleased]: https://github.com/jjeff07/libreclient/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/jjeff07/libreclient/releases/tag/v0.1.0
