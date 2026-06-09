@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-09
+
+### Changed
+
+- ci: Fix CI/CD.
+- ci: Fix CI/CD.
+- fix: Response statuses were not raised. (#2) (#3)
+- fix: Response statuses were not raised. (#2)
+- style: Fix format.
+- fix: Response statuses were not raised.
+
 ## [0.1.0] - 2026-06-09
 
 ### Added
@@ -21,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upstream API tracking (`check_upstream.py`) pinned to LibreNMS 26.5.1
 - Full unit test suite (140 tests) and functional test suite (41 tests)
 
-[Unreleased]: https://github.com/jjeff07/libreclient/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/jjeff07/libreclient/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/jjeff07/libreclient/compare/0.1.0...v0.1.1
 [0.1.0]: https://github.com/jjeff07/libreclient/releases/tag/v0.1.0
 
