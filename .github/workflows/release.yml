@@ -164,7 +164,7 @@ jobs:
       - uses: astral-sh/setup-uv@v8.2.0
 
       - name: Publish to TestPyPI
-        run: uv publish --index-url https://test.pypi.org/legacy/
+        run: uv publish --index testpypi
 
   publish-pypi:
     name: Publish to PyPI
