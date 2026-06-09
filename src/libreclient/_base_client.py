@@ -30,6 +30,7 @@ class BaseLibreClient(LibreConfig, ABC):
         response = await self._request_raw(
             method, self._api_url(path), **kwargs
         )
+        response.raise_for_status()
         return await _json_from_response(response)
 
     async def _request_bytes(
@@ -38,6 +39,7 @@ class BaseLibreClient(LibreConfig, ABC):
         response = await self._request_raw(
             method, self._api_url(path), **kwargs
         )
+        response.raise_for_status()
         payload = response.content
         if inspect.isawaitable(payload):
             payload = await payload
