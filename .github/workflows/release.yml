@@ -67,20 +67,41 @@ jobs:
             COMMITS=$(git log --pretty=format:"- %s" --no-merges)
           fi
 
-          # Build the new changelog entry
-          ENTRY="## [${NEW_VERSION}] - ${DATE}\n\n### Changed\n\n${COMMITS}"
+          python3 - "$NEW_VERSION" "$DATE" "$PREV_TAG" "$COMMITS" <<'EOF'
+          import sys
+          from pathlib import Path
 
-          # Insert after [Unreleased] section
-          sed -i "/^## \[Unreleased\]/a\\\\n${ENTRY}" CHANGELOG.md
+          version, date, prev_tag, commits = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+          repo = "https://github.com/jjeff07/libreclient"
 
-          # Update comparison links at bottom
-          if [ -n "$PREV_TAG" ]; then
-            sed -i "s|\[Unreleased\]:.*|\[Unreleased\]: https://github.com/jjeff07/libreclient/compare/v${NEW_VERSION}...HEAD|" CHANGELOG.md
-            sed -i "/^\[Unreleased\]/a [${NEW_VERSION}]: https://github.com/jjeff07/libreclient/compare/${PREV_TAG}...v${NEW_VERSION}" CHANGELOG.md
-          else
-            sed -i "s|\[Unreleased\]:.*|\[Unreleased\]: https://github.com/jjeff07/libreclient/compare/v${NEW_VERSION}...HEAD|" CHANGELOG.md
-            echo "[${NEW_VERSION}]: https://github.com/jjeff07/libreclient/releases/tag/v${NEW_VERSION}" >> CHANGELOG.md
-          fi
+          entry = f"\n## [{version}] - {date}\n\n### Changed\n\n{commits}\n"
+
+          changelog = Path("CHANGELOG.md")
+          content = changelog.read_text()
+
+          # Insert new entry after ## [Unreleased] line
+          marker = "## [Unreleased]"
+          idx = content.find(marker)
+          if idx != -1:
+              end_of_line = content.index("\n", idx)
+              content = content[:end_of_line + 1] + entry + content[end_of_line + 1:]
+
+          # Update [Unreleased] comparison link
+          unreleased_link = f"[Unreleased]: {repo}/compare/v{version}...HEAD"
+          import re
+          content = re.sub(r"\[Unreleased\]:.*", unreleased_link, content)
+
+          # Add version comparison link
+          if prev_tag:
+              version_link = f"[{version}]: {repo}/compare/{prev_tag}...v{version}"
+          else:
+              version_link = f"[{version}]: {repo}/releases/tag/v{version}"
+
+          # Insert version link after [Unreleased] link
+          content = content.replace(unreleased_link, f"{unreleased_link}\n{version_link}")
+
+          changelog.write_text(content)
+          EOF
 
       # --- Generate Type Stubs ---
       - name: Generate .pyi stubs
@@ -100,7 +121,7 @@ jobs:
       # --- Commit & Tag ---
       - name: Commit version bump and changelog
         run: |
-          git add pyproject.toml uv.lock CHANGELOG.md src/
+          git add pyproject.toml uv.lock CHANGELOG.md
           git commit -m "release: v${{ steps.bump.outputs.version }}"
           git tag "v${{ steps.bump.outputs.version }}"
           git push origin HEAD --tags
