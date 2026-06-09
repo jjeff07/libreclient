@@ -117,6 +117,27 @@ All route namespaces are accessible as properties on the client:
 
 ---
 
+## Contributing
+
+Contributions are welcome! We're actively looking for contributors to help with:
+
+- 🐛 Bug fixes and edge case handling
+- ✨ Support for new routes as LibreNMS adds API endpoints
+- 📖 Documentation improvements
+- 🧪 Test coverage expansion
+- 🔧 Tooling and CI improvements
+
+**Getting started:**
+
+1. Fork the repo and create a branch from `dev`
+2. Follow the [Development](#development) setup below
+3. Make your changes with tests
+4. Open a PR against `dev` — CI will lint, test, and auto-fix formatting
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, or just open an issue to discuss your idea first.
+
+---
+
 ## Development
 
 ### Prerequisites
