@@ -289,14 +289,11 @@ jobs:
           files: dist/*
 
       # --- Sync dev branch ---
-      - name: Fast-forward dev to main
+      - name: Reset dev to main
         if: steps.decide.outputs.skip != 'true' && steps.set-dry-run.outputs.dry_run != 'true'
         continue-on-error: true
         run: |
-          git fetch origin dev
-          git checkout dev
-          git merge --ff-only origin/main
-          git push origin dev
+          git push origin HEAD:refs/heads/dev --force
 
   publish-testpypi:
     name: Publish to TestPyPI
@@ -317,7 +314,7 @@ jobs:
       - uses: astral-sh/setup-uv@v8.2.0
 
       - name: Publish to TestPyPI
-        run: uv publish --index testpypi
+        run: uv publish --publish-url https://test.pypi.org/legacy/
 
   publish-pypi:
     name: Publish to PyPI
