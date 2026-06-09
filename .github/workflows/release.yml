@@ -11,6 +11,11 @@ on:
           - patch
           - minor
           - major
+      dry_run:
+        description: "Dry run (build only, no publish/push)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -125,8 +130,12 @@ jobs:
           name: dist
           path: dist/
 
+      - name: Show changelog diff
+        run: git diff CHANGELOG.md
+
       # --- Commit & Tag ---
       - name: Commit version bump and changelog
+        if: ${{ inputs.dry_run == false }}
         run: |
           git add pyproject.toml uv.lock CHANGELOG.md
           git commit -m "release: v${{ steps.bump.outputs.version }}"
@@ -135,6 +144,7 @@ jobs:
 
       # --- GitHub Release ---
       - name: Create GitHub Release
+        if: ${{ inputs.dry_run == false }}
         uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.bump.outputs.version }}
@@ -147,6 +157,7 @@ jobs:
 
       # --- Sync dev branch ---
       - name: Fast-forward dev to main
+        if: ${{ inputs.dry_run == false }}
         run: |
           git fetch origin dev
           git checkout dev
@@ -156,6 +167,7 @@ jobs:
   publish-testpypi:
     name: Publish to TestPyPI
     needs: release
+    if: ${{ inputs.dry_run == false }}
     runs-on: ubuntu-latest
     continue-on-error: true
     environment:
@@ -176,6 +188,7 @@ jobs:
   publish-pypi:
     name: Publish to PyPI
     needs: release
+    if: ${{ inputs.dry_run == false }}
     runs-on: ubuntu-latest
     environment:
       name: pypi
