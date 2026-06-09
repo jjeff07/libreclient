@@ -72,9 +72,7 @@ def test_sync_client_raises_for_http_error(monkeypatch) -> None:
         status_code = 404
 
         def raise_for_status(self):
-            raise HTTPError(
-                "404 Not Found", response=self
-            )
+            raise HTTPError("404 Not Found", response=self)
 
         def json(self):
             return {"status": "error", "message": "Not Found"}
@@ -97,9 +95,7 @@ def test_async_client_raises_for_http_error(monkeypatch) -> None:
         status_code = 500
 
         def raise_for_status(self):
-            raise HTTPError(
-                "500 Internal Server Error", response=self
-            )
+            raise HTTPError("500 Internal Server Error", response=self)
 
         def json(self):
             return {"status": "error", "message": "Server Error"}
@@ -113,4 +109,3 @@ def test_async_client_raises_for_http_error(monkeypatch) -> None:
         asyncio.run(client.system.ping())
 
     asyncio.run(client.close())
-
