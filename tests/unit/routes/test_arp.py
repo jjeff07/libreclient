@@ -17,7 +17,8 @@ class TestListArp:
         route = Arp(mock_client)
         result = asyncio.run(route.list_arp("10.0.0.1"))  # noqa: S1313
         mock_client._get.assert_called_once_with(
-            "/resources/ip/arp/10.0.0.1", params={}  # noqa: S1313
+            "/resources/ip/arp/10.0.0.1",
+            params={},  # noqa: S1313
         )
         assert isinstance(result, ArpResponse)
 

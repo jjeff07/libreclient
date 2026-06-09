@@ -67,6 +67,7 @@ ignore = [
     "TC001", # move import into type-checking block (breaks synchronicity runtime)
     "TC003", # move stdlib import into type-checking block
 ]
+external = ["S"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["libreclient"]
