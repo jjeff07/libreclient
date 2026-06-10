@@ -3,7 +3,7 @@
 # Install: git config core.hooksPath .githooks
 
 # Get staged .py files (excluding deleted files)
-STAGED_PY=$(git diff --cached --name-only --diff-filter=d -- '*.py')
+STAGED_PY=$(git diff --cached --name-only --diff-filter=d -- '**/*.py')
 
 if [ -z "$STAGED_PY" ]; then
     exit 0
