@@ -80,7 +80,7 @@ indent-style = "space"
 [tool.complexipy]
 paths = ["src"]
 max-complexity-allowed = 15
-exclude = ["scripts"]
+exclude = ["scripts/**"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
