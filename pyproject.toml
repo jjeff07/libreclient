@@ -4,7 +4,7 @@ version = "0.1.2"
 description = "Async and sync Python client for the LibreNMS API"
 readme = "README.md"
 authors = [
-    { name = "Justin Jeffery", email = "34625666+jjeff07@users.noreply.github.com" }
+    { name = "Justin Jeffery", email = "jjeff@j-jeff.com" }
 ]
 requires-python = ">=3.12"
 license = "MIT"
@@ -33,6 +33,7 @@ dev = [
     "pytest>=9.0.3",
     "python-dotenv>=1.2.2",
     "ruff>=0.15.16",
+    "zensical>=0.0.45",
 ]
 
 [tool.pytest.ini_options]

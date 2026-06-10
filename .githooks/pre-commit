@@ -42,13 +42,18 @@ else
     COMPLEXIPY="uv run complexipy"
 fi
 
-echo "Running complexipy..."
-$COMPLEXIPY $STAGED_PY --max-complexity-allowed 15
-COMPLEXITY_EXIT=$?
+# Run complexipy only on staged src/ files (matches pyproject.toml [tool.complexipy] paths)
+STAGED_SRC=$(echo "$STAGED_PY" | grep "^src/" || true)
 
-if [ $COMPLEXITY_EXIT -ne 0 ]; then
-    echo "complexipy found functions exceeding max cognitive complexity (15)."
-    exit 1
+if [ -n "$STAGED_SRC" ]; then
+    echo "Running complexipy..."
+    $COMPLEXIPY $STAGED_SRC --max-complexity-allowed 15
+    COMPLEXITY_EXIT=$?
+
+    if [ $COMPLEXITY_EXIT -ne 0 ]; then
+        echo "complexipy found functions exceeding max cognitive complexity (15)."
+        exit 1
+    fi
 fi
 
 exit 0

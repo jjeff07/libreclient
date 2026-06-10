@@ -1,7 +1,17 @@
 # libreclient
 
+[![PyPI](https://img.shields.io/pypi/v/libreclient)](https://pypi.org/project/libreclient/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/jjeff07/libreclient/actions/workflows/ci.yml/badge.svg)](https://github.com/jjeff07/libreclient/actions)
+[![Documentation](https://img.shields.io/badge/docs-online-blue)](https://jjeff07.github.io/libreclient/)
+
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Niquests](https://img.shields.io/badge/niquests-HTTP%2F3-blueviolet)](https://github.com/jawah/niquests)
+[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://docs.pydantic.dev/latest/)
+[![complexipy](https://img.shields.io/badge/complexipy-max%2015-orange)](https://github.com/rohaquinlop/complexipy)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
 Async and sync Python client for the [LibreNMS](https://www.librenms.org/) API.
 
@@ -139,6 +149,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, or just open an 
 ---
 
 ## Development
+
+This section covers everything you need to set up a local development environment and contribute code to libreclient.
 
 ### Prerequisites
 
