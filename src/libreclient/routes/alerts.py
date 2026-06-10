@@ -1,6 +1,7 @@
 """Alerts routes — async implementation."""
 
 import typing
+
 from ..models import ApiResponse
 from ..models.alerts import (
     AlertsResponse,

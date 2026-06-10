@@ -3,7 +3,6 @@
 from ._synchronicity import synchronizer
 from .routing import Routing
 
-
 RoutingSync = synchronizer.wrap(
     Routing, name="RoutingSync", target_module=__name__
 )

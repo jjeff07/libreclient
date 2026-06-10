@@ -3,7 +3,4 @@
 from ._synchronicity import synchronizer
 from .bills import Bills
 
-
-BillsSync = synchronizer.wrap(
-    Bills, name="BillsSync", target_module=__name__
-)
+BillsSync = synchronizer.wrap(Bills, name="BillsSync", target_module=__name__)

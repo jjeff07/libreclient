@@ -3,7 +3,4 @@
 from ._synchronicity import synchronizer
 from .logs import Logs
 
-
-LogsSync = synchronizer.wrap(
-    Logs, name="LogsSync", target_module=__name__
-)
+LogsSync = synchronizer.wrap(Logs, name="LogsSync", target_module=__name__)

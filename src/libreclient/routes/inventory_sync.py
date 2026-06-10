@@ -3,7 +3,6 @@
 from ._synchronicity import synchronizer
 from .inventory import Inventory
 
-
 InventorySync = synchronizer.wrap(
     Inventory, name="InventorySync", target_module=__name__
 )

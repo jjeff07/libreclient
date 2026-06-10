@@ -10,7 +10,9 @@ import ast
 import re
 from pathlib import Path
 
-ROUTES_DIR = Path(__file__).resolve().parent.parent / "src" / "libreclient" / "routes"
+ROUTES_DIR = (
+    Path(__file__).resolve().parent.parent / "src" / "libreclient" / "routes"
+)
 
 
 def collect_imports_from_async(source: str) -> list[str]:
@@ -27,8 +29,16 @@ def collect_imports_from_async(source: str) -> list[str]:
                 if node.module and node.module.endswith("._base"):
                     continue
             # Filter out private utilities from _types imports (not needed in stubs)
-            if isinstance(node, ast.ImportFrom) and node.module and "_types" in node.module:
-                node.names = [alias for alias in node.names if not alias.name.startswith("_")]
+            if (
+                isinstance(node, ast.ImportFrom)
+                and node.module
+                and "_types" in node.module
+            ):
+                node.names = [
+                    alias
+                    for alias in node.names
+                    if not alias.name.startswith("_")
+                ]
                 if not node.names:
                     continue
             import_lines.append(ast.unparse(node))
@@ -113,7 +123,9 @@ def main():
     sync_files = sorted(ROUTES_DIR.glob("*_sync.py"))
 
     # Collect route metadata for __init__ generation
-    route_entries: list[tuple[str, str, str]] = []  # (async_module, async_class, sync_class)
+    route_entries: list[
+        tuple[str, str, str]
+    ] = []  # (async_module, async_class, sync_class)
 
     for sync_file in sync_files:
         sync_source = sync_file.read_text(encoding="utf-8")
@@ -162,7 +174,12 @@ def main():
                 stub_content += f'    """{async_class} (synchronous)."""\n'
                 # Add _client attribute annotation
                 for method in ast.iter_child_nodes(node):
-                    if isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef)) and method.name == "__init__":
+                    if (
+                        isinstance(
+                            method, (ast.FunctionDef, ast.AsyncFunctionDef)
+                        )
+                        and method.name == "__init__"
+                    ):
                         for arg in method.args.args:
                             if arg.arg == "client" and arg.annotation:
                                 ann = ast.unparse(arg.annotation)
@@ -170,8 +187,12 @@ def main():
                                 break
                         break
                 for method in ast.iter_child_nodes(node):
-                    if isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                        stub_content += generate_method_stub(method, set()) + "\n"
+                    if isinstance(
+                        method, (ast.FunctionDef, ast.AsyncFunctionDef)
+                    ):
+                        stub_content += (
+                            generate_method_stub(method, set()) + "\n"
+                        )
                 # Record for __init__ generation
                 route_entries.append((async_module, async_class, sync_name))
                 break
@@ -181,7 +202,9 @@ def main():
     # Generate __init__.py and __init__.pyi
     _generate_routes_init(route_entries)
 
-    print(f"\nDone! Generated {len(sync_files)} stub files + __init__.py + __init__.pyi.")
+    print(
+        f"\nDone! Generated {len(sync_files)} stub files + __init__.py + __init__.pyi."
+    )
 
 
 def _generate_routes_init(entries: list[tuple[str, str, str]]) -> None:
@@ -195,7 +218,9 @@ def _generate_routes_init(entries: list[tuple[str, str, str]]) -> None:
     for async_module, async_class, sync_class in entries:
         sync_module = f"{async_module}_sync"
         async_alias = f"{async_class}Async"
-        import_lines.append(f"from .{async_module} import {async_class} as {async_alias}")
+        import_lines.append(
+            f"from .{async_module} import {async_class} as {async_alias}"
+        )
         import_lines.append(f"from .{sync_module} import {sync_class}")
         all_names.append(f'    "{async_alias}",')
         all_names.append(f'    "{sync_class}",')
@@ -215,8 +240,12 @@ def _generate_routes_init(entries: list[tuple[str, str, str]]) -> None:
     for async_module, async_class, sync_class in entries:
         sync_module = f"{async_module}_sync"
         async_alias = f"{async_class}Async"
-        pyi_import_lines.append(f"from .{async_module} import {async_class} as {async_alias}")
-        pyi_import_lines.append(f"from .{sync_module} import {sync_class} as {sync_class}")
+        pyi_import_lines.append(
+            f"from .{async_module} import {async_class} as {async_alias}"
+        )
+        pyi_import_lines.append(
+            f"from .{sync_module} import {sync_class} as {sync_class}"
+        )
 
     pyi_content = "\n".join(pyi_import_lines)
     pyi_content += "\n\n__all__ = [\n"
