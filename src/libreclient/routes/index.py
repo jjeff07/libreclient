@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from ..models.index import IndexResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -20,6 +19,3 @@ class Index:
         """
         data = await self._client._get("")
         return IndexResponse(endpoints=data)
-
-
-IndexSync = synchronizer.wrap(Index, name="IndexSync", target_module=__name__)

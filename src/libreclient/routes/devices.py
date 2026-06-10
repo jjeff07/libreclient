@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Literal
+import typing
 
 from ..models import ApiResponse
 from ..models.devices import (
@@ -12,7 +12,6 @@ from ..models.devices import (
     DeviceResponse,
     DevicesResponse,
 )
-from ._synchronicity import synchronizer
 from ._types import (
     ClientProtocol,
     _compact,
@@ -20,7 +19,7 @@ from ._types import (
     _validate_maintenance_params,
 )
 
-DeviceListType = Literal[
+DeviceListType = typing.Literal[
     "all",
     "active",
     "ignored",
@@ -713,8 +712,3 @@ class Devices:
             f"/devices/{device}/parents", json=payload
         )
         return ApiResponse.model_validate(data)
-
-
-DevicesSync = synchronizer.wrap(
-    Devices, name="DevicesSync", target_module=__name__
-)

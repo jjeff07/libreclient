@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from ..models import ApiResponse
 from ..models.logs import LogsResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -160,6 +159,3 @@ def _build_log_params(start, limit, from_time, to_time, sortorder):
     if sortorder is not None:
         params["sortorder"] = sortorder
     return params
-
-
-LogsSync = synchronizer.wrap(Logs, name="LogsSync", target_module=__name__)

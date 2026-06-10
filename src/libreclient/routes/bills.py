@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Literal
+import typing
 
 from ..models import ApiResponse
 from ..models.bills import BillHistoryResponse, BillsResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol, _compact, _graph_params
 
 _BILLS = "/bills"
@@ -19,7 +18,7 @@ class Bills:
         self._client = client
 
     async def list_bills(
-        self, period: Literal["previous"] | None = None
+        self, period: typing.Literal["previous"] | None = None
     ) -> BillsResponse:
         """Retrieve the list of bills currently in the system.
 
@@ -35,7 +34,7 @@ class Bills:
         bill_id: int | None = None,
         ref: str | None = None,
         custid: str | None = None,
-        period: Literal["previous"] | None = None,
+        period: typing.Literal["previous"] | None = None,
     ) -> BillsResponse:
         """Retrieve a specific bill.
 
@@ -162,6 +161,3 @@ class Bills:
         """
         data = await self._client._post(_BILLS, json=kwargs)
         return ApiResponse.model_validate(data)
-
-
-BillsSync = synchronizer.wrap(Bills, name="BillsSync", target_module=__name__)
