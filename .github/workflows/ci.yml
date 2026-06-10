@@ -69,7 +69,13 @@ jobs:
         run: uv sync
 
       - name: Run complexipy
-        run: uv run complexipy .
+        run: uv run complexipy . --output-format sarif --output complexipy-results.sarif --failed
+
+      - name: Upload SARIF results
+        if: always() && hashFiles('complexipy-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: complexipy-results.sarif
 
   test:
     name: Tests

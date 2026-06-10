@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from ..models.poller_groups import PollerGroupsResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -27,8 +26,3 @@ class PollerGroups:
             url += f"/{poller_group}"
         data = await self._client._get(url)
         return PollerGroupsResponse.model_validate(data)
-
-
-PollerGroupsSync = synchronizer.wrap(
-    PollerGroups, name="PollerGroupsSync", target_module=__name__
-)

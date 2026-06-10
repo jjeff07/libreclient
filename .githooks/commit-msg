@@ -3,4 +3,4 @@
 # Install: git config core.hooksPath .githooks
 
 # Use python -m to avoid Windows .exe access issues
-exec python -m commitizen check --commit-msg-file "$1"
+exec uv run python -m commitizen check --commit-msg-file "$1"

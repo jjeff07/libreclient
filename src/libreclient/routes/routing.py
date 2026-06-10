@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Literal
+import typing
 
 from ..models import ApiResponse
 from ..models.routing import RoutingResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol, _compact
 
 
@@ -90,7 +89,7 @@ class Routing:
         return RoutingResponse.model_validate(data)
 
     async def list_ip_addresses(
-        self, address_family: Literal["ipv4", "ipv6"] | None = None
+        self, address_family: typing.Literal["ipv4", "ipv6"] | None = None
     ) -> RoutingResponse:
         """List all IPv4 and IPv6 (or version-specific) addresses.
 
@@ -119,7 +118,7 @@ class Routing:
         return RoutingResponse.model_validate(data)
 
     async def list_ip_networks(
-        self, address_family: Literal["ipv4", "ipv6"] | None = None
+        self, address_family: typing.Literal["ipv4", "ipv6"] | None = None
     ) -> RoutingResponse:
         """List all IPv4 and IPv6 (or version-specific) networks.
 
@@ -240,8 +239,3 @@ class Routing:
             "/routing/mpls/saps", params=_compact(hostname=hostname)
         )
         return RoutingResponse.model_validate(data)
-
-
-RoutingSync = synchronizer.wrap(
-    Routing, name="RoutingSync", target_module=__name__
-)

@@ -39,7 +39,7 @@ git config core.hooksPath .githooks
 2. Create `src/libreclient/models/myroute.py` with Pydantic response models
 3. Add exports to `routes/__init__.py` and `models/__init__.py`
 4. Wire up in `client.py` (both sync and async)
-5. Run `uv run python generate_stubs.py`
+5. Run `uv run python scripts/generate_stubs.py`
 6. Add unit tests in `tests/unit/routes/` and `tests/unit/models/`
 
 ## Running Tests

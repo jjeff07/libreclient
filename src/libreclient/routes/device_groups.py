@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Literal
+import typing
 
 from ..models import ApiResponse
 from ..models.device_groups import (
     DeviceGroupDevicesResponse,
     DeviceGroupsResponse,
 )
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol, _compact, _validate_maintenance_params
 
 
@@ -53,7 +52,7 @@ class DeviceGroups:
     async def add_devicegroup(
         self,
         name: str,
-        type: Literal["static", "dynamic"],
+        type: typing.Literal["static", "dynamic"],
         desc: str | None = None,
         rules: str | None = None,
         devices: list | None = None,
@@ -82,7 +81,7 @@ class DeviceGroups:
         self,
         name: str,
         new_name: str | None = None,
-        type: Literal["static", "dynamic"] | None = None,
+        type: typing.Literal["static", "dynamic"] | None = None,
         desc: str | None = None,
         rules: str | None = None,
         devices: list | None = None,
@@ -197,8 +196,3 @@ class DeviceGroups:
             f"/devicegroups/{name}/devices", json={"devices": devices}
         )
         return ApiResponse.model_validate(data)
-
-
-DeviceGroupsSync = synchronizer.wrap(
-    DeviceGroups, name="DeviceGroupsSync", target_module=__name__
-)

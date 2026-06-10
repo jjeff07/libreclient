@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Literal
+import typing
 
 from ..models import ApiResponse
 from ..models.services import ServicesResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol, _compact
 
 
@@ -17,7 +16,9 @@ class Services:
         self._client = client
 
     async def list_services(
-        self, state: Literal[0, 1, 2] | None = None, type: str | None = None
+        self,
+        state: typing.Literal[0, 1, 2] | None = None,
+        type: str | None = None,
     ) -> ServicesResponse:
         """Retrieve all services.
 
@@ -34,7 +35,7 @@ class Services:
     async def get_service_for_host(
         self,
         hostname: str,
-        state: Literal[0, 1, 2] | None = None,
+        state: typing.Literal[0, 1, 2] | None = None,
         type: str | None = None,
     ) -> ServicesResponse:
         """Retrieve services for a specific device.
@@ -101,8 +102,3 @@ class Services:
         """
         data = await self._client._delete(f"/services/{service_id}")
         return ApiResponse.model_validate(data)
-
-
-ServicesSync = synchronizer.wrap(
-    Services, name="ServicesSync", target_module=__name__
-)

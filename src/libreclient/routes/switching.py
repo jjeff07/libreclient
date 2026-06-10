@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from ..models.switching import SwitchingResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -91,8 +90,3 @@ class Switching:
             url += f"/{mac}"
         data = await self._client._get(url)
         return SwitchingResponse.model_validate(data)
-
-
-SwitchingSync = synchronizer.wrap(
-    Switching, name="SwitchingSync", target_module=__name__
-)

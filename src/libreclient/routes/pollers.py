@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from ..models.pollers import PollersResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -33,8 +32,3 @@ class Pollers:
             params["unpolled"] = 1
         data = await self._client._get("/pollers/log", params=params)
         return PollersResponse.model_validate(data)
-
-
-PollersSync = synchronizer.wrap(
-    Pollers, name="PollersSync", target_module=__name__
-)

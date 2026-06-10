@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from ..models import ApiResponse
 from ..models.port_groups import PortGroupsResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol, _compact
 
 
@@ -80,8 +79,3 @@ class PortGroups:
             f"/port_groups/{port_group_id}/remove", json={"port_ids": port_ids}
         )
         return ApiResponse.model_validate(data)
-
-
-PortGroupsSync = synchronizer.wrap(
-    PortGroups, name="PortGroupsSync", target_module=__name__
-)

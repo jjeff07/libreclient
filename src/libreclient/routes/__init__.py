@@ -1,41 +1,41 @@
 from .alerts import Alerts as AlertsAsync
-from .alerts import AlertsSync
+from .alerts_sync import AlertsSync
 from .arp import Arp as ArpAsync
-from .arp import ArpSync
+from .arp_sync import ArpSync
 from .bills import Bills as BillsAsync
-from .bills import BillsSync
+from .bills_sync import BillsSync
 from .device_groups import DeviceGroups as DeviceGroupsAsync
-from .device_groups import DeviceGroupsSync
+from .device_groups_sync import DeviceGroupsSync
 from .devices import Devices as DevicesAsync
-from .devices import DevicesSync
+from .devices_sync import DevicesSync
 from .index import Index as IndexAsync
-from .index import IndexSync
+from .index_sync import IndexSync
 from .inventory import Inventory as InventoryAsync
-from .inventory import InventorySync
+from .inventory_sync import InventorySync
 from .locations import Locations as LocationsAsync
-from .locations import LocationsSync
+from .locations_sync import LocationsSync
 from .logs import Logs as LogsAsync
-from .logs import LogsSync
+from .logs_sync import LogsSync
 from .poller_groups import PollerGroups as PollerGroupsAsync
-from .poller_groups import PollerGroupsSync
+from .poller_groups_sync import PollerGroupsSync
 from .pollers import Pollers as PollersAsync
-from .pollers import PollersSync
+from .pollers_sync import PollersSync
 from .port_groups import PortGroups as PortGroupsAsync
-from .port_groups import PortGroupsSync
+from .port_groups_sync import PortGroupsSync
 from .port_security import PortSecurity as PortSecurityAsync
-from .port_security import PortSecuritySync
+from .port_security_sync import PortSecuritySync
 from .portgroups import Portgroups as PortgroupsAsync
-from .portgroups import PortgroupsSync
+from .portgroups_sync import PortgroupsSync
 from .ports import Ports as PortsAsync
-from .ports import PortsSync
+from .ports_sync import PortsSync
 from .routing import Routing as RoutingAsync
-from .routing import RoutingSync
+from .routing_sync import RoutingSync
 from .services import Services as ServicesAsync
-from .services import ServicesSync
+from .services_sync import ServicesSync
 from .switching import Switching as SwitchingAsync
-from .switching import SwitchingSync
+from .switching_sync import SwitchingSync
 from .system import System as SystemAsync
-from .system import SystemSync
+from .system_sync import SystemSync
 
 __all__ = [
     "AlertsAsync",

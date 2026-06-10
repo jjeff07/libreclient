@@ -218,7 +218,7 @@ autocomplete and type checking, `.pyi` stub files are auto-generated.
 **Regenerate stubs locally:**
 
 ```bash
-uv run python generate_stubs.py
+uv run python scripts/generate_stubs.py
 ```
 
 Stubs are generated automatically during the GitHub Actions release workflow, so you don't need to commit them — they're
@@ -273,19 +273,19 @@ This project tracks which LibreNMS release tag the route implementations are bas
 
 ```bash
 # Check if upstream has a newer release
-python check_upstream.py
+python scripts/check_upstream.py
 
 # See which API doc files changed
-python check_upstream.py --diff
+python scripts/check_upstream.py --diff
 
 # See full unified diffs of changed docs
-python check_upstream.py --full
+python scripts/check_upstream.py --full
 
 # Compare against a specific tag instead of latest
-python check_upstream.py --diff --tag 26.6.0
+python scripts/check_upstream.py --diff --tag 26.6.0
 
 # Bump the pinned tag after reviewing changes
-python check_upstream.py --bump
+python scripts/check_upstream.py --bump
 ```
 
 ### Project Structure
@@ -308,9 +308,10 @@ libreclient/
 │   │   ├── models/            # Model validation tests
 │   │   └── routes/            # Route logic tests (MockClient)
 │   └── functional/            # Live API tests (requires .env)
-├── check_upstream.py          # Detect upstream API doc changes
-├── upstream_tracking.toml     # Pinned LibreNMS release tag
-├── generate_stubs.py          # .pyi stub generator
+├── scripts/
+│   ├── check_upstream.py      # Detect upstream API doc changes
+│   ├── upstream_tracking.toml # Pinned LibreNMS release tag
+│   ├── generate_stubs.py      # .pyi stub generator
 ├── pyproject.toml
 ├── CHANGELOG.md
 └── LICENSE
