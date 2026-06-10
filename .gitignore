@@ -9,7 +9,7 @@ wheels/
 # Virtual environments
 .venv
 
-# Auto-generated type stubs (regenerate with: python generate_stubs.py)
+# Auto-generated type stubs (regenerate with: python scripts/generate_stubs.py)
 src/py_librenms/routes/*.pyi
 
 # Secrets

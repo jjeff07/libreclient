@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Literal
+import typing
 
 from ..models import ApiResponse
 from ..models.ports import (
@@ -12,7 +12,6 @@ from ..models.ports import (
     PortsResponse,
     PortTransceiverResponse,
 )
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -73,7 +72,8 @@ class Ports:
     async def get_port_info(
         self,
         port_id: int,
-        with_relations: Literal["vlans", "device", "statistics"] | None = None,
+        with_relations: typing.Literal["vlans", "device", "statistics"]
+        | None = None,
     ) -> PortResponse:
         """Get all info for a particular port.
 
@@ -133,6 +133,3 @@ class Ports:
             f"/ports/{port_id}/description", json={"description": description}
         )
         return ApiResponse.model_validate(data)
-
-
-PortsSync = synchronizer.wrap(Ports, name="PortsSync", target_module=__name__)

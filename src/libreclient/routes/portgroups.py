@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol, _graph_params
 
 
@@ -57,8 +56,3 @@ class Portgroups:
         return await self._client._get_bytes(
             f"/portgroups/multiport/bits/{port_ids}", params=params
         )
-
-
-PortgroupsSync = synchronizer.wrap(
-    Portgroups, name="PortgroupsSync", target_module=__name__
-)

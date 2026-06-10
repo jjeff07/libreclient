@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from ..models import ApiResponse
 from ..models.system import SystemResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -29,8 +28,3 @@ class System:
         """
         data = await self._client._get("/system")
         return SystemResponse.model_validate(data)
-
-
-SystemSync = synchronizer.wrap(
-    System, name="SystemSync", target_module=__name__
-)

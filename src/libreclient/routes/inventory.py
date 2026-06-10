@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from ..models.inventory import InventoryResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -51,8 +50,3 @@ class Inventory:
             f"/inventory/{hostname}/all", params=params
         )
         return InventoryResponse.model_validate(data)
-
-
-InventorySync = synchronizer.wrap(
-    Inventory, name="InventorySync", target_module=__name__
-)

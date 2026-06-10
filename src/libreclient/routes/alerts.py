@@ -1,6 +1,6 @@
 """Alerts routes — async implementation."""
 
-from typing import Any, Literal
+import typing
 
 from ..models import ApiResponse
 from ..models.alerts import (
@@ -9,7 +9,6 @@ from ..models.alerts import (
     AlertTemplatesResponse,
     RulesResponse,
 )
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol, _compact
 
 _RULES = "/rules"
@@ -61,8 +60,8 @@ class Alerts:
 
     async def list_alerts(
         self,
-        state: Literal[0, 1, 2] | None = None,
-        severity: Literal["ok", "warning", "critical"] | None = None,
+        state: typing.Literal[0, 1, 2] | None = None,
+        severity: typing.Literal["ok", "warning", "critical"] | None = None,
         alert_rule: int | None = None,
         order: str | None = None,
     ) -> AlertsResponse:
@@ -168,7 +167,7 @@ class Alerts:
         :param title_rec: Title used when an alert has recovered.
         :param alert_rules: List of rule_ids this template applies to.
         """
-        payload: dict[str, Any] = {
+        payload: dict[str, typing.Any] = {
             "name": name,
             "template": template,
             **_compact(
@@ -198,7 +197,7 @@ class Alerts:
         :param title_rec: Title used when an alert has recovered.
         :param alert_rules: List of rule_ids this template applies to.
         """
-        payload: dict[str, Any] = {
+        payload: dict[str, typing.Any] = {
             "template_id": template_id,
             "name": name,
             "template": template,
@@ -208,8 +207,3 @@ class Alerts:
         }
         data = await self._client._post(_ALERT_TEMPLATES, json=payload)
         return ApiResponse.model_validate(data)
-
-
-AlertsSync = synchronizer.wrap(
-    Alerts, name="AlertsSync", target_module=__name__
-)

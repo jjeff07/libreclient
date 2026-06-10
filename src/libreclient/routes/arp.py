@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from ..models.arp import ArpResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -30,6 +29,3 @@ class Arp:
             f"/resources/ip/arp/{query}", params=params
         )
         return ArpResponse.model_validate(data)
-
-
-ArpSync = synchronizer.wrap(Arp, name="ArpSync", target_module=__name__)

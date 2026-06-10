@@ -1,0 +1,55 @@
+#!/bin/sh
+# Run ruff lint and format on staged Python files.
+# Install: git config core.hooksPath .githooks
+
+# Get staged .py files (excluding deleted files)
+STAGED_PY=$(git diff --cached --name-only --diff-filter=d -- '**/*.py')
+
+if [ -z "$STAGED_PY" ]; then
+    exit 0
+fi
+
+# Check if running in an environment where ruff is available directly
+if command -v ruff >/dev/null 2>&1; then
+    RUFF="ruff"
+else
+    RUFF="uv run ruff"
+fi
+
+# Lint with auto-fix
+echo "Running ruff check..."
+$RUFF check --fix $STAGED_PY
+LINT_EXIT=$?
+
+# Format
+echo "Running ruff format..."
+$RUFF format $STAGED_PY
+FORMAT_EXIT=$?
+
+# Re-stage any auto-fixed files
+git add $STAGED_PY
+
+# Fail if lint had unfixable errors
+if [ $LINT_EXIT -ne 0 ]; then
+    echo "ruff check found issues that could not be auto-fixed."
+    exit 1
+fi
+
+# Run complexipy to check cognitive complexity
+if command -v complexipy >/dev/null 2>&1; then
+    COMPLEXIPY="complexipy"
+else
+    COMPLEXIPY="uv run complexipy"
+fi
+
+echo "Running complexipy..."
+$COMPLEXIPY $STAGED_PY --max-complexity-allowed 15
+COMPLEXITY_EXIT=$?
+
+if [ $COMPLEXITY_EXIT -ne 0 ]; then
+    echo "complexipy found functions exceeding max cognitive complexity (15)."
+    exit 1
+fi
+
+exit 0
+

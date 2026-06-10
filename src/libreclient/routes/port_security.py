@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from ..models.port_security import PortSecurityResponse
-from ._synchronicity import synchronizer
 from ._types import ClientProtocol
 
 
@@ -44,8 +43,3 @@ class PortSecurity:
         """
         data = await self._client._get(f"/port_security/device/{hostname}")
         return PortSecurityResponse.model_validate(data)
-
-
-PortSecuritySync = synchronizer.wrap(
-    PortSecurity, name="PortSecuritySync", target_module=__name__
-)

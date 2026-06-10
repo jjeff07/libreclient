@@ -153,6 +153,21 @@ cd libreclient
 uv sync
 ```
 
+#### Git Hooks
+
+This project uses custom git hooks in the `.githooks/` directory.
+
+**Setup (once per clone):**
+
+```bash
+git config core.hooksPath .githooks
+```
+
+| Hook         | Purpose                                                                                                                                            |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `pre-commit` | Runs `ruff check --fix` and `ruff format` on staged `.py` files, re-stages fixes, then runs `complexipy` to enforce max cognitive complexity (15). |
+| `commit-msg` | Validates commit messages against Conventional Commits format via commitizen.                                                                      |
+
 ### Running Tests
 
 ```bash
@@ -199,9 +214,9 @@ The [synchronicity](https://github.com/modal-com/synchronicity) library then wra
 synchronous counterpart at runtime.
 
 ```
-src/py_librenms/routes/alerts.py
-├── class Alerts              ← async implementation (the only code you write)
-└── AlertsSync = synchronizer.wrap(Alerts, ...)   ← sync wrapper (auto-generated at import)
+src/libreclient/routes/
+├── alerts.py           ← async implementation (the only code you write)
+└── alerts_sync.py      ← sync wrapper (imports Alerts, wraps with synchronizer)
 ```
 
 This means:
@@ -218,7 +233,7 @@ autocomplete and type checking, `.pyi` stub files are auto-generated.
 **Regenerate stubs locally:**
 
 ```bash
-uv run python generate_stubs.py
+uv run python scripts/generate_stubs.py
 ```
 
 Stubs are generated automatically during the GitHub Actions release workflow, so you don't need to commit them — they're
@@ -226,25 +241,18 @@ in `.gitignore`.
 
 ### Adding a New Route
 
-1. Create `src/py_librenms/routes/myroute.py` with an async class and `MyRouteSync = synchronizer.wrap(...)` at the
-   bottom.
-2. Create `src/py_librenms/models/myroute.py` with Pydantic response models.
-3. Add exports to `src/py_librenms/models/__init__.py`.
-4. Add exports to `src/py_librenms/routes/__init__.py`.
-5. Wire up the route in `src/py_librenms/client.py` (both sync and async clients).
-6. Run `uv run python generate_stubs.py`.
+1. Create `src/libreclient/routes/myroute.py` with an async class.
+2. Create `src/libreclient/routes/myroute_sync.py` with `MyRouteSync = synchronizer.wrap(...)`.
+3. Create `src/libreclient/models/myroute.py` with Pydantic response models.
+4. Add exports to `src/libreclient/models/__init__.py`.
+5. Wire up the route in `src/libreclient/client.py` (both sync and async clients).
+6. Run `uv run python scripts/generate_stubs.py` to regenerate stubs and `__init__` files.
 7. Add tests in `tests/unit/routes/test_myroute.py` and `tests/unit/models/test_myroute.py`.
 
 ### Commit Convention
 
 This project enforces [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) via
 [commitizen](https://commitizen-tools.github.io/commitizen/). A git hook validates every commit message automatically.
-
-**Setup the hook (once per clone):**
-
-```bash
-git config core.hooksPath .githooks
-```
 
 **Format:**
 
@@ -256,6 +264,8 @@ type(scope)?: description
 ```
 
 **Allowed types:** `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`, `bump`
+
+> See [COMMIT_TYPES.md](COMMIT_TYPES.md) for full definitions and scope conventions.
 
 **Examples:**
 
@@ -273,26 +283,26 @@ This project tracks which LibreNMS release tag the route implementations are bas
 
 ```bash
 # Check if upstream has a newer release
-python check_upstream.py
+python scripts/check_upstream.py
 
 # See which API doc files changed
-python check_upstream.py --diff
+python scripts/check_upstream.py --diff
 
 # See full unified diffs of changed docs
-python check_upstream.py --full
+python scripts/check_upstream.py --full
 
 # Compare against a specific tag instead of latest
-python check_upstream.py --diff --tag 26.6.0
+python scripts/check_upstream.py --diff --tag 26.6.0
 
 # Bump the pinned tag after reviewing changes
-python check_upstream.py --bump
+python scripts/check_upstream.py --bump
 ```
 
 ### Project Structure
 
 ```
 libreclient/
-├── src/py_librenms/
+├── src/libreclient/
 │   ├── __init__.py            # Public API exports
 │   ├── client.py              # LibreClientSync & LibreClientAsync
 │   ├── config.py              # Pydantic-settings configuration
@@ -301,16 +311,21 @@ libreclient/
 │   └── routes/                # Route namespaces (async + sync wrappers)
 │       ├── _types.py          # ClientProtocol & utilities
 │       ├── _synchronicity.py  # Shared Synchronizer instance
-│       ├── alerts.py          # Example route implementation
+│       ├── alerts.py          # Async route implementation
+│       ├── alerts_sync.py     # Sync wrapper
 │       └── ...
 ├── tests/
 │   ├── unit/
 │   │   ├── models/            # Model validation tests
 │   │   └── routes/            # Route logic tests (MockClient)
 │   └── functional/            # Live API tests (requires .env)
-├── check_upstream.py          # Detect upstream API doc changes
+├── scripts/
+│   ├── check_upstream.py      # Detect upstream API doc changes
+│   └── generate_stubs.py      # .pyi stub generator
+├── .githooks/
+│   ├── pre-commit             # Ruff lint & format
+│   └── commit-msg             # Conventional commit validation
 ├── upstream_tracking.toml     # Pinned LibreNMS release tag
-├── generate_stubs.py          # .pyi stub generator
 ├── pyproject.toml
 ├── CHANGELOG.md
 └── LICENSE
