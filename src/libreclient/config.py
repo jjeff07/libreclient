@@ -3,9 +3,16 @@ LibreNMS client configuration via Pydantic Settings.
 """
 
 import re
+from pathlib import Path
 
+from dotenv import find_dotenv
 from pydantic import AnyHttpUrl, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _find_env_file() -> str:
+    """Locate .env file: search from cwd upward, fallback to ~/.env."""
+    return find_dotenv(usecwd=True) or str(Path("~").expanduser() / ".env")
 
 
 class LibreConfig(BaseSettings):
@@ -13,11 +20,14 @@ class LibreConfig(BaseSettings):
 
     Values can be supplied directly or via environment variables prefixed
     with ``LIBRENMS_`` (e.g. ``LIBRENMS_URL``, ``LIBRENMS_TOKEN``).
+
+    The ``.env`` file is auto-discovered by searching from the current working
+    directory upward, falling back to ``~/.env`` if not found.
     """
 
     model_config = SettingsConfigDict(
         env_prefix="LIBRENMS_",
-        env_file=".env",
+        env_file=_find_env_file(),
         env_file_encoding="utf-8",
         extra="ignore",
     )
