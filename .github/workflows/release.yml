@@ -133,9 +133,9 @@ jobs:
             let commits;
             try {
               const prevTag = execSync('git describe --tags --abbrev=0 2>/dev/null', { encoding: 'utf8' }).trim();
-              commits = execSync(`git log ${prevTag}..HEAD --pretty=format:"%s" --no-merges`, { encoding: 'utf8' });
+              commits = execSync(`git log ${prevTag}..HEAD --pretty=format:"%s%n%b" --no-merges`, { encoding: 'utf8' });
             } catch {
-              commits = execSync('git log --pretty=format:"%s" --no-merges', { encoding: 'utf8' });
+              commits = execSync('git log --pretty=format:"%s%n%b" --no-merges', { encoding: 'utf8' });
             }
 
             const lines = commits.split('\n').filter(Boolean);
