@@ -22,6 +22,8 @@ from .devices import (
     DevicePortsResponse,
     DeviceResponse,
     DevicesResponse,
+    IcmpOnlyDevice,
+    SnmpV3Credentials,
 )
 from .index import IndexResponse
 from .inventory import InventoryResponse
@@ -60,6 +62,7 @@ __all__ = [
     "DevicePortsResponse",
     "DeviceResponse",
     "DevicesResponse",
+    "IcmpOnlyDevice",
     "IndexResponse",
     "InventoryResponse",
     "ListResponse",
@@ -78,6 +81,7 @@ __all__ = [
     "RoutingResponse",
     "RulesResponse",
     "ServicesResponse",
+    "SnmpV3Credentials",
     "SwitchingResponse",
     "SystemResponse",
 ]
