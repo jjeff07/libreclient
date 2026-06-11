@@ -93,12 +93,18 @@ pass values directly or set environment variables:
 | `LIBRENMS_VERIFY_SSL`  | Verify TLS certificates            | `true`       |
 | `LIBRENMS_API_VERSION` | API version path segment           | `v0`         |
 
-A `.env` file in your working directory is also supported. Copy the included sample to get started:
+A `.env` file is auto-discovered by searching from your current working directory upward. If none is found, it falls
+back to `~/.env`. Copy the included sample to get started:
 
 ```bash
 cp sample.env .env
 # Edit .env with your LibreNMS URL and API token
 ```
+
+The search order is:
+
+1. `.env` in the current working directory or any parent directory
+2. `~/.env` (home directory fallback)
 
 ## Available Route Namespaces
 
