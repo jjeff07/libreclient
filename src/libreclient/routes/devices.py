@@ -11,6 +11,8 @@ from ..models.devices import (
     DevicePortsResponse,
     DeviceResponse,
     DevicesResponse,
+    IcmpOnlyDevice,
+    SnmpV3Credentials,
 )
 from ._types import (
     ClientProtocol,
@@ -42,6 +44,12 @@ DeviceListType = typing.Literal[
     "hardware",
     "features",
 ]
+
+SnmpVersion = typing.Literal["v1", "v2c", "v3"]
+
+SnmpTransport = typing.Literal["udp", "tcp", "udp6", "tcp6"]
+
+PortAssociationMode = typing.Literal["ifIndex", "ifName", "ifDescr", "ifAlias"]
 
 
 class Devices:
@@ -571,15 +579,100 @@ class Devices:
         )
         return ApiResponse.model_validate(data)
 
-    async def add_device(self, hostname: str, **kwargs) -> ApiResponse:
+    async def add_device(
+        self,  # NOSONAR
+        hostname: str,
+        display: str | None = None,
+        snmpver: SnmpVersion | None = None,
+        community: str | None = None,
+        snmp_v3: SnmpV3Credentials | None = None,
+        port: int | None = None,
+        transport: SnmpTransport | None = None,
+        port_association_mode: PortAssociationMode | None = None,
+        poller_group: int = 0,
+        force_add: bool = False,
+        ping_fallback: bool = False,
+        snmp_disable: bool = False,
+        icmp_device: IcmpOnlyDevice | None = None,
+        location: str | None = None,
+        location_id: int | None = None,
+        **kwargs,
+    ) -> ApiResponse:
         """Add a new device.
 
         Route: POST /api/v0/devices
 
-        :param hostname: Hostname or IP of the device to add.
-        :param kwargs: Additional device fields (snmpver, community, port, transport, etc.).
+        :param hostname: Device hostname or IP address (required).
+        :param display: Display name for the device. Supports templates:
+            ``{{ $hostname }}``, ``{{ $sysName }}``, ``{{ $sysName_fallback }}``, ``{{ $ip }}``.
+            Defaults to hostname (or device_display_default setting).
+        :param snmpver: SNMP version — ``'v1'``, ``'v2c'``, or ``'v3'``.
+            Defaults to None to use the LibreNMS global config default.
+        :param community: SNMP community string. Required when snmpver is ``'v1'`` or ``'v2c'``.
+        :param snmp_v3: SNMPv3 credentials. Required when snmpver is ``'v3'``. Use a
+            :class:`~libreclient.models.devices.SnmpV3Credentials` instance to supply
+            authlevel, authname, authpass, authalgo, cryptopass, and cryptoalgo.
+        :param port: SNMP port. Defaults to the port defined in LibreNMS config.
+        :param transport: SNMP transport protocol — ``'udp'``, ``'tcp'``, ``'udp6'``, or ``'tcp6'``.
+            Defaults to the transport defined in LibreNMS config.
+        :param port_association_mode: Method to identify ports —
+            ``'ifIndex'``, ``'ifName'``, ``'ifDescr'``, or ``'ifAlias'``.
+        :param poller_group: Poller group ID for distributed polling. Defaults to 0.
+        :param force_add: Skip all checks and add the device directly. SNMP credentials
+            are required when using this option.
+        :param ping_fallback: If SNMP checks fail, add the device as ping-only
+            instead of failing.
+        :param snmp_disable: If True, disable SNMP and use ICMP only.
+        :param icmp_device: Additional device info for ICMP-only mode. Use a
+            :class:`~libreclient.models.devices.IcmpOnlyDevice` instance to supply
+            os, sysName, and hardware. Only used when snmp_disable is True.
+        :param location: Set device location by text (mutually exclusive with location_id).
+        :param location_id: Set device location by ID (mutually exclusive with location).
+        :raises ValueError: If both location and location_id are provided, or if
+            snmpver is v1/v2c without community, or v3 without snmp_v3.
         """
-        payload = {"hostname": hostname, **kwargs}
+        if location is not None and location_id is not None:
+            raise ValueError(
+                "Only one of 'location' or 'location_id' may be specified, not both."
+            )
+        if snmpver in ("v1", "v2c") and not community:
+            raise ValueError(
+                f"'community' is required when snmpver is '{snmpver}'."
+            )
+        if snmpver == "v3" and snmp_v3 is None:
+            raise ValueError(
+                "'snmp_v3' credentials are required when snmpver is 'v3'."
+            )
+
+        payload: dict = {
+            "hostname": hostname,
+            "poller_group": poller_group,
+            **_compact(
+                display=display,
+                snmpver=snmpver,
+                community=community,
+                port=port,
+                transport=transport,
+                port_association_mode=port_association_mode,
+                force_add=1 if force_add else None,
+                ping_fallback=1 if ping_fallback else None,
+                snmp_disable=1 if snmp_disable else None,
+                location=location,
+                location_id=location_id,
+                override_sysLocation=1
+                if (location is not None or location_id is not None)
+                else None,
+            ),
+        }
+
+        if snmp_v3 is not None:
+            payload.update(snmp_v3.model_dump(mode="json", exclude_none=True))
+
+        if snmp_disable and icmp_device is not None:
+            payload.update(
+                icmp_device.model_dump(by_alias=True, exclude_none=True)
+            )
+
         data = await self._client._post("/devices", json=payload)
         return ApiResponse.model_validate(data)
 
@@ -599,10 +692,10 @@ class Devices:
         # API returns a raw list (not wrapped in a dict)
         if isinstance(data, list):
             return data
-        return ApiResponse.model_validate(data)
+        return []
 
     async def update_device_field(
-        self, hostname: str, field: str | list, data: str | list
+        self, hostname: str, field: str | list[str], data: str | list[str]
     ) -> ApiResponse:
         """Update a device field in the database.
 
@@ -611,7 +704,22 @@ class Devices:
         :param hostname: Device hostname or ID.
         :param field: Field name or list of field names to update.
         :param data: New value or list of values corresponding to fields.
+        :raises ValueError: If field and data are both lists but have different lengths,
+            or if one is a list and the other is not.
         """
+        if isinstance(field, list) != isinstance(data, list):
+            raise ValueError(
+                "'field' and 'data' must both be strings or both be lists."
+            )
+        if (
+            isinstance(field, list)
+            and isinstance(data, list)
+            and len(field) != len(data)
+        ):
+            raise ValueError(
+                f"'field' and 'data' lists must have the same length "
+                f"(got {len(field)} fields and {len(data)} values)."
+            )
         resp = await self._client._patch(
             f"/devices/{hostname}", json={"field": field, "data": data}
         )
