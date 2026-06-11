@@ -58,6 +58,11 @@ Copyright &copy; 2026 Justin Jeffery
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
     {"Getting Started" = "index.md"},
+    {
+        "Examples" = [
+            "examples/add_device.md",
+        ]
+    },
     {"Support" = "support.md"},
     {
         "Development" = [
@@ -382,3 +387,12 @@ custom_checkbox = true
 
 [project.markdown_extensions.zensical.extensions.macros]
 module_name = "scripts/zensical_macros"
+
+[project.plugins.mkdocstrings.handlers.python]
+inventories = ["https://docs.python.org/3/objects.inv"]
+paths = ["src"]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+docstring_style = "sphinx"
+inherited_members = true
+show_source = false

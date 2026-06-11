@@ -47,7 +47,7 @@ STAGED_SRC=$(echo "$STAGED_PY" | grep "^src/" || true)
 
 if [ -n "$STAGED_SRC" ]; then
     echo "Running complexipy..."
-    $COMPLEXIPY $STAGED_SRC --max-complexity-allowed 15
+    PYTHONIOENCODING=utf-8 $COMPLEXIPY $STAGED_SRC --max-complexity-allowed 15
     COMPLEXITY_EXIT=$?
 
     if [ $COMPLEXITY_EXIT -ne 0 ]; then

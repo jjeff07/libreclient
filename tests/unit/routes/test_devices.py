@@ -76,6 +76,7 @@ class TestAddDevice:
             "/devices",
             json={
                 "hostname": "newhost",
+                "poller_group": 0,
                 "snmpver": "v2c",
                 "community": "public",
             },

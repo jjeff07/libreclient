@@ -21,13 +21,16 @@ def collect_imports_from_async(source: str) -> list[str]:
     import_lines: list[str] = ["from __future__ import annotations", ""]
     for node in ast.iter_child_nodes(tree):
         if isinstance(node, (ast.Import, ast.ImportFrom)):
-            if isinstance(node, ast.ImportFrom):
-                if node.module and node.module.startswith("__future__"):
-                    continue
-                if node.module and ("_synchronicity" in node.module):
-                    continue
-                if node.module and node.module.endswith("._base"):
-                    continue
+            if (
+                isinstance(node, ast.ImportFrom)
+                and node.module
+                and (
+                    node.module.startswith("__future__")
+                    or "_synchronicity" in node.module
+                    or node.module.endswith("._base")
+                )
+            ):
+                continue
             # Filter out private utilities from _types imports (not needed in stubs)
             if (
                 isinstance(node, ast.ImportFrom)
@@ -47,8 +50,36 @@ def collect_imports_from_async(source: str) -> list[str]:
     return import_lines
 
 
+def collect_type_aliases(source: str) -> list[str]:
+    """Collect module-level type alias assignments from the async source module.
+
+    These are assignments like ``DeviceListType = typing.Literal[...]`` that need
+    to be reproduced in the stub so that type references resolve correctly.
+    """
+    tree = ast.parse(source)
+    alias_lines: list[str] = []
+    for node in ast.iter_child_nodes(tree):
+        if (
+            isinstance(node, ast.Assign)
+            and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id[0].isupper()
+        ) or (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.value
+        ):
+            alias_lines.append(ast.unparse(node))
+    if alias_lines:
+        alias_lines.append("")
+        alias_lines.append("")
+    return alias_lines
+
+
 def generate_method_stub(
-    func_node: ast.FunctionDef | ast.AsyncFunctionDef, imports_needed: set[str]
+    func_node: ast.FunctionDef | ast.AsyncFunctionDef,
+    imports_needed: set[str],
+    source_filename: str = "",
 ) -> str:
     """Generate a sync method stub from an async function definition."""
     # Get the signature
@@ -102,7 +133,13 @@ def generate_method_stub(
         return_ann = f" -> {ast.unparse(func_node.returns)}"
 
     params_str = ", ".join(params)
-    signature = f"    def {func_node.name}({params_str}){return_ann}: ..."
+
+    # Build the Better Highlights link comment for PyCharm navigation
+    link_comment = ""
+    if source_filename and func_node.name != "__init__":
+        link_comment = f"  #  [[{source_filename}#{func_node.name}]]"
+
+    signature = f"    def {func_node.name}({params_str}){return_ann}: ...{link_comment}"
 
     # Add docstring as a comment for IDE hover
     docstring = ast.get_docstring(func_node)
@@ -110,10 +147,10 @@ def generate_method_stub(
         # Use a proper docstring in the stub
         doc_lines = docstring.strip().split("\n")
         if len(doc_lines) == 1:
-            signature = f'    def {func_node.name}({params_str}){return_ann}:\n        """{doc_lines[0]}"""\n        ...'
+            signature = f'    def {func_node.name}({params_str}){return_ann}:\n        """{doc_lines[0]}"""\n        ...{link_comment}'
         else:
             doc_body = "\n        ".join(doc_lines)
-            signature = f'    def {func_node.name}({params_str}){return_ann}:\n        """{doc_body}"""\n        ...'
+            signature = f'    def {func_node.name}({params_str}){return_ann}:\n        """{doc_body}"""\n        ...{link_comment}'
 
     return signature
 
@@ -162,9 +199,26 @@ def main():
         stub_file = ROUTES_DIR / f"{sync_file.stem}.pyi"
         print(f"Generating {stub_file.name} from {async_file.name}...")
 
+        # Build module docstring for the stub
+        async_rel_path = f"src/libreclient/routes/{async_file.name}"
+        module_doc = (
+            f'"""\n'
+            f"Auto-generated stub for {sync_file.stem} (synchronous API).\n"
+            f"\n"
+            f"This file provides type information for IDE support and static analysis.\n"
+            f"The actual implementation is generated at runtime via synchronicity from:\n"
+            f"    {async_rel_path}\n"
+            f'"""\n\n'
+        )
+
         # Collect imports from the async module
         import_lines = collect_imports_from_async(async_source)
-        stub_content = "\n".join(import_lines)
+        stub_content = module_doc + "\n".join(import_lines)
+
+        # Collect module-level type aliases (e.g. Literal types)
+        type_aliases = collect_type_aliases(async_source)
+        if type_aliases:
+            stub_content += "\n".join(type_aliases)
 
         # Generate sync class stub that mirrors the async class but with plain def
         stub_content += f"class {sync_name}:\n"
@@ -191,7 +245,10 @@ def main():
                         method, (ast.FunctionDef, ast.AsyncFunctionDef)
                     ):
                         stub_content += (
-                            generate_method_stub(method, set()) + "\n"
+                            generate_method_stub(
+                                method, set(), async_file.name
+                            )
+                            + "\n"
                         )
                 # Record for __init__ generation
                 route_entries.append((async_module, async_class, sync_name))
