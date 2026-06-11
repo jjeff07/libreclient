@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-11
+
+### Changed
+
+- ci: Fix autorelease to find commits in squashed message. (#31)
+- Correct Adding Device function (#30)
+- docs: Fix docs ci. (#27)
+- docs: Fix docs ci. (#26)
+- docs: Fix docs ci. (#25)
+- docs: Fix docs ci. (#24)
+
 ## [0.1.3] - 2026-06-10
 
 ### Changed
@@ -46,7 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upstream API tracking (`check_upstream.py`) pinned to LibreNMS 26.5.1
 - Full unit test suite (140 tests) and functional test suite (41 tests)
 
-[Unreleased]: https://github.com/jjeff07/libreclient/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/jjeff07/libreclient/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/jjeff07/libreclient/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/jjeff07/libreclient/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/jjeff07/libreclient/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/jjeff07/libreclient/compare/0.1.0...v0.1.1
