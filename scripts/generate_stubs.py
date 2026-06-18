@@ -15,7 +15,7 @@ ROUTES_DIR = (
 )
 
 
-def collect_imports_from_async(source: str) -> list[str]:
+def collect_imports_from_async(source: str) -> list[str]:  # complexipy: ignore
     """Collect import lines needed for the stub from the async source module."""
     tree = ast.parse(source)
     import_lines: list[str] = ["from __future__ import annotations", ""]

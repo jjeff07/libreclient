@@ -21,6 +21,11 @@ Repository = "https://github.com/jjeff07/libreclient.git"
 Issues = "https://github.com/jjeff07/libreclient/issues"
 Changelog = "https://github.com/jjeff07/libreclient/blob/main/CHANGELOG.md"
 
+[project.optional-dependencies]
+cli = [
+    "rich>=15.0.0",
+]
+
 
 [build-system]
 requires = ["uv_build>=0.11.2,<0.12.0"]
@@ -29,7 +34,7 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "commitizen>=4.16.3",
-    "complexipy>=5.5.0",
+    "complexipy>=5.6.0",
     "mkdocstrings-python>=2.0.4",
     "pytest>=9.0.3",
     "python-dotenv>=1.2.2",

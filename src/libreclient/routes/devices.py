@@ -583,6 +583,7 @@ class Devices:
         self,  # NOSONAR
         hostname: str,
         display: str | None = None,
+        overwrite_ip: str | None = None,
         snmpver: SnmpVersion | None = None,
         community: str | None = None,
         snmp_v3: SnmpV3Credentials | None = None,
@@ -606,6 +607,7 @@ class Devices:
         :param display: Display name for the device. Supports templates:
             ``{{ $hostname }}``, ``{{ $sysName }}``, ``{{ $sysName_fallback }}``, ``{{ $ip }}``.
             Defaults to hostname (or device_display_default setting).
+        :param overwrite_ip: Override hostname field and use this IP.
         :param snmpver: SNMP version — ``'v1'``, ``'v2c'``, or ``'v3'``.
             Defaults to None to use the LibreNMS global config default.
         :param community: SNMP community string. Required when snmpver is ``'v1'`` or ``'v2c'``.
@@ -648,6 +650,7 @@ class Devices:
             "hostname": hostname,
             "poller_group": poller_group,
             **_compact(
+                overwrite_ip=overwrite_ip,
                 display=display,
                 snmpver=snmpver,
                 community=community,
