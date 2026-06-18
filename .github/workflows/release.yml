@@ -312,6 +312,8 @@ jobs:
           path: dist/
 
       - uses: astral-sh/setup-uv@v8.2.0
+        with:
+          enable-cache: false
 
       - name: Publish to TestPyPI
         run: uv publish --publish-url https://test.pypi.org/legacy/
@@ -332,6 +334,8 @@ jobs:
           path: dist/
 
       - uses: astral-sh/setup-uv@v8.2.0
+        with:
+          enable-cache: false
 
       - name: Publish to PyPI
         run: uv publish
