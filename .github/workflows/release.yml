@@ -58,12 +58,12 @@ jobs:
           client-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: astral-sh/setup-uv@v8.2.0
+      - uses: astral-sh/setup-uv@v8.3.1
         with:
           enable-cache: "true"
 
@@ -311,7 +311,7 @@ jobs:
           name: dist
           path: dist/
 
-      - uses: astral-sh/setup-uv@v8.2.0
+      - uses: astral-sh/setup-uv@v8.3.1
         with:
           enable-cache: false
 
@@ -333,7 +333,7 @@ jobs:
           name: dist
           path: dist/
 
-      - uses: astral-sh/setup-uv@v8.2.0
+      - uses: astral-sh/setup-uv@v8.3.1
         with:
           enable-cache: false
 
